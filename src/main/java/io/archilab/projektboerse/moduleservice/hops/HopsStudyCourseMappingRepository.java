@@ -10,5 +10,8 @@ public interface HopsStudyCourseMappingRepository extends
     PagingAndSortingRepository<HopsStudyCourseMapping, UUID> {
 
   Optional<HopsStudyCourseMapping> findByHopsId(HopsStudyCourseId hopsId);
+  
+
+  Optional<HopsStudyCourseMapping> findByStudyCourseId(UUID studyCourseId);
 
 }

@@ -2,7 +2,7 @@ version: '3'
 
 services:
   module-service:
-    image: ptb.archi-lab.io/module-service
+    image: ptb-gp-ss2019.archi-lab.io/module-service
     ports:
       - "9001:9001"
     restart: always

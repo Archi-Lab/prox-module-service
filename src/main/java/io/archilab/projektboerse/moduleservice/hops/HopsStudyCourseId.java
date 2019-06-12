@@ -12,10 +12,10 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HopsStudyCourseId {
 
-  private String bezeichnung;
+  private String study_course_kürzel;
 
-  public HopsStudyCourseId(String bezeichnung) {
-    this.bezeichnung = bezeichnung;
+  public HopsStudyCourseId(String study_course_kürzel) {
+    this.study_course_kürzel = study_course_kürzel;
   }
 
 }

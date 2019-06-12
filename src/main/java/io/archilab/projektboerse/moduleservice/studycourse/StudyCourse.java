@@ -7,14 +7,20 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -29,7 +35,13 @@ public class StudyCourse extends AbstractEntity {
   @Setter
   private AcademicDegree academicDegree;
 
-  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//  @JoinTable(
+//		  name = "module_courses",
+//		  joinColumns = { @JoinColumn(name = "study_course_id", referencedColumnName = "id") },
+//		  inverseJoinColumns = { @JoinColumn(name = "module_id", referencedColumnName = "id") } )
+  
+  @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},fetch=FetchType.LAZY)
+  @JoinColumn(name = "module_id")
   private Set<Module> modules = new HashSet<>();
 
   @OneToMany(mappedBy = "parentStudyCourse", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -58,6 +70,10 @@ public class StudyCourse extends AbstractEntity {
   public void removeModule(Module module) {
     this.modules.remove(module);
   }
+  
+  public void removeAllModules() {
+	  this.modules = new HashSet<>();
+	  }
 
   public void addStudyDirection(StudyCourse studyDirection) {
     if (studyDirection.getParentStudyCourse() != null) {

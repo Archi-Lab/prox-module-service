@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+    module-db:
+      image: postgres:11.2-alpine
+      ports:
+        - 5432:5432
+      restart: always
+      environment:
+        - POSTGRES_USER=module-service
+        - POSTGRES_PASSWORD=module-service
+        - POSTGRES_DB=module-db
+        - PGDATA=/var/lib/postgresql/data/pgdata

@@ -1,6 +1,5 @@
 package io.archilab.projektboerse.moduleservice.core;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.UUID;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -14,7 +13,6 @@ import lombok.Setter;
 public abstract class AbstractEntity {
 
   @Id
-  @JsonIgnore
   private UUID id;
 
   protected AbstractEntity() {
