@@ -1,0 +1,11 @@
+eureka:
+  client:
+    enabled: false
+keycloak:
+  enabled: false
+server:
+  port: 9001
+  use-forward-headers: true
+spring:
+  application:
+    name: module-service
