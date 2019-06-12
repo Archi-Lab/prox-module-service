@@ -1,42 +1,42 @@
-
-CREATE TABLE IF NOT EXISTS public.hops_module_mapping (
-                                          id uuid NOT NULL,
-                                          kuerzel character varying(255),
-                                          version character varying(255),
-                                          module_id uuid
+create table hops_module_mapping
+(
+    id        uuid not null,
+    kuerzel   varchar(255),
+    version   varchar(255),
+    module_id uuid,
+    primary key (id)
 );
 
-CREATE TABLE IF NOT EXISTS public.hops_module_mapping (
-                                                        id uuid NOT NULL,
-                                                        kuerzel character varying(255),
-                                                        version character varying(255),
-                                                        module_id uuid
+create table hops_study_course_mapping
+(
+    id                  uuid not null,
+    study_course_kürzel varchar(255),
+    study_course_id     uuid,
+    primary key (id)
 );
 
-
-CREATE TABLE IF NOT EXISTS public.hops_study_course_mapping (
-                                                id uuid NOT NULL,
-                                                "study_course_kürzel" character varying(255),
-                                                study_course_id uuid
+create table module
+(
+    id          uuid not null,
+    description varchar(9000),
+    name        varchar(255),
+    module_id   uuid,
+    primary key (id)
 );
 
-
-CREATE TABLE IF NOT EXISTS public.module (
-                             id uuid NOT NULL,
-                             description character varying(9000),
-                             name character varying(255),
-                             module_id uuid
+create table study_course
+(
+    id                     uuid not null,
+    academic_degree        int4,
+    name                   varchar(255),
+    parent_study_course_id uuid,
+    primary key (id)
 );
 
-CREATE TABLE IF NOT EXISTS public.study_course (
-                                   id uuid NOT NULL,
-                                   academic_degree integer,
-                                   name character varying(255),
-                                   parent_study_course_id uuid
-);
+alter table module
+    add constraint FK_module_study_course
+        foreign key (module_id) references study_course;
 
-
-CREATE TABLE IF NOT EXISTS public.study_course_modules (
-                                           study_course_id uuid NOT NULL,
-                                           modules_id uuid NOT NULL
-);
+alter table study_course
+    add constraint FK_study_course_study_course
+        foreign key (parent_study_course_id) references study_course;
