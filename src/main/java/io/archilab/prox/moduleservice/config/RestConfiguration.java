@@ -1,4 +1,4 @@
-package io.archilab.prox.moduleservice;
+package io.archilab.prox.moduleservice.config;
 
 import javax.persistence.EntityManager;
 import javax.persistence.metamodel.Type;
@@ -19,7 +19,7 @@ public class RestConfiguration implements RepositoryRestConfigurer {
   public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
     config.exposeIdsFor(
         this.entityManager.getMetamodel().getEntities().stream().map(Type::getJavaType)
-        .toArray(Class[]::new));
+            .toArray(Class[]::new));
   }
 
 
