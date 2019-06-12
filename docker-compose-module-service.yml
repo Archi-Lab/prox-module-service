@@ -1,17 +1,18 @@
-version: '3'
+version: "3.7"
 
 services:
+
   module-service:
-    image: ptb-gp-ss2019.archi-lab.io/module-service
+    image: docker.nexus.archi-lab.io/archilab/prox-module-service
     ports:
       - "9001:9001"
     restart: always
     networks:
-      - ptb
+      - prox
       - module-db
 
   module-db:
-    image: postgres:11.2-alpine
+    image: postgres:11.3-alpine
     volumes:
       - module-db-data:/var/lib/postgresql/data
     restart: always
@@ -27,7 +28,6 @@ volumes:
   module-db-data:
 
 networks:
-  ptb:
+  prox:
     external: true
   module-db:
-
