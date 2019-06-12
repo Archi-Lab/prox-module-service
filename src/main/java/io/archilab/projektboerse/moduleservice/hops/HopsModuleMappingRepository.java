@@ -7,11 +7,11 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource(exported = false)
-public interface HopsModuleMappingRepository extends
-    PagingAndSortingRepository<HopsModuleMapping, UUID> {
+public interface HopsModuleMappingRepository
+    extends PagingAndSortingRepository<HopsModuleMapping, UUID> {
 
   List<HopsModuleMapping> findByHopsId(HopsModuleId hopsId);
-  
+
   Optional<HopsModuleMapping> findByModuleId(UUID moduleId);
 
 }

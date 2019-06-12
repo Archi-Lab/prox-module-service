@@ -18,9 +18,8 @@ public class ModuleName {
 
   public ModuleName(String name) {
     if (!ModuleName.isValid(name)) {
-      throw new IllegalArgumentException(String
-          .format("Name %s exceeded maximum number of %d allowed characters", name,
-              ModuleName.MAX_LENGTH));
+      throw new IllegalArgumentException(String.format(
+          "Name %s exceeded maximum number of %d allowed characters", name, ModuleName.MAX_LENGTH));
     }
     this.name = name;
   }

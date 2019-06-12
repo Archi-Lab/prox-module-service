@@ -1,7 +1,6 @@
 package io.archilab.projektboerse.moduleservice.studycourse;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;

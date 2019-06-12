@@ -20,8 +20,8 @@ public class ModuleDescription {
 
   public ModuleDescription(String description) {
     if (!ModuleDescription.isValid(description)) {
-      throw new IllegalArgumentException(String
-          .format("Name %s exceeded maximum number of %d allowed characters", description,
+      throw new IllegalArgumentException(
+          String.format("Name %s exceeded maximum number of %d allowed characters", description,
               ModuleDescription.MAX_LENGTH));
     }
     this.description = description;
