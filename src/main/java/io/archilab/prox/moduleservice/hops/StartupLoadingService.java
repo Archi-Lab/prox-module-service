@@ -243,7 +243,8 @@ public class StartupLoadingService {
     // Status Info über den Import
     StartupLoadingService.log.info("Status Info");
     {
-      long size = StreamSupport.stream(this.moduleRepository.findAll().spliterator(), false).count();
+      long size =
+          StreamSupport.stream(this.moduleRepository.findAll().spliterator(), false).count();
       StartupLoadingService.log.info("Anzahl Module: " + String.valueOf(size));
     }
 

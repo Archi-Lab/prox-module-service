@@ -62,10 +62,9 @@ class KeyCon extends KeycloakWebSecurityConfigurerAdapter {
         // .and()
         // TODO vlt. in Zukunft csrf protection aktiveren, dann müsste im Client ein solches Token
         // immer mitgeschickt werden
-        .csrf().disable().sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // STATELESS
-        .sessionAuthenticationStrategy(this.sessionAuthenticationStrategy()).and().authorizeRequests()
-        .antMatchers(HttpMethod.GET, "/modules*").permitAll()
+        .csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // STATELESS
+        .sessionAuthenticationStrategy(this.sessionAuthenticationStrategy()).and()
+        .authorizeRequests().antMatchers(HttpMethod.GET, "/modules*").permitAll()
         .antMatchers(HttpMethod.GET, "/modules/*").permitAll()
         .antMatchers(HttpMethod.GET, "/modules/**").permitAll().antMatchers("/modules*").denyAll()
         .antMatchers("/modules/*").denyAll().antMatchers("/modules/**").denyAll()
@@ -109,10 +108,9 @@ class KeyConDevelopment extends KeycloakWebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     super.configure(http);
-    http.csrf().disable().sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // STATELESS
-        .sessionAuthenticationStrategy(this.sessionAuthenticationStrategy()).and().authorizeRequests()
-        .anyRequest().permitAll();
+    http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // STATELESS
+        .sessionAuthenticationStrategy(this.sessionAuthenticationStrategy()).and()
+        .authorizeRequests().anyRequest().permitAll();
   }
 
   @Autowired

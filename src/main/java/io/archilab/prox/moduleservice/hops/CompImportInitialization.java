@@ -40,12 +40,10 @@ public class CompImportInitialization {
 
     ArrayList<ModuleHOPS> moduleHopsGET =
         (ArrayList<ModuleHOPS>) this.importData("MODULE", this.hopsApiGet::getModules);
-    ArrayList<StudiengängeHOPS> studiengängeHopsGET =
-        (ArrayList<StudiengängeHOPS>) this.importData("MSTUDIENGANGRICHTUNG",
-            this.hopsApiGet::getStudiengänge);
-    ArrayList<ModStuMappingHOPS> mappingHopsGET =
-        (ArrayList<ModStuMappingHOPS>) this.importData("MODULECURRICULUM",
-            this.hopsApiGet::getModuleCuriculum);
+    ArrayList<StudiengängeHOPS> studiengängeHopsGET = (ArrayList<StudiengängeHOPS>) this
+        .importData("MSTUDIENGANGRICHTUNG", this.hopsApiGet::getStudiengänge);
+    ArrayList<ModStuMappingHOPS> mappingHopsGET = (ArrayList<ModStuMappingHOPS>) this
+        .importData("MODULECURRICULUM", this.hopsApiGet::getModuleCuriculum);
 
     CompImportInitialization.log.info("Retrieved all Data from HOPS");
 
@@ -70,8 +68,7 @@ public class CompImportInitialization {
     } catch (Exception e) {
       CompImportInitialization.log.info("Failed to import " + type);
       CompImportInitialization.log.info("Import " + type + " from local file");
-      TypeReference<List<?>> typeReference = new TypeReference<List<?>>() {
-      };
+      TypeReference<List<?>> typeReference = new TypeReference<List<?>>() {};
       InputStream inputStream = TypeReference.class.getResourceAsStream("/data/" + type + ".json");
       try {
         ObjectMapper objectMapper = new ObjectMapper();
