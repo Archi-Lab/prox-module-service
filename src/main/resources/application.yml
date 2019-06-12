@@ -1,0 +1,29 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://service-discovery:8761/eureka/
+keycloak:
+  auth-server-url: https://login.coalbase.io/auth
+  bearer-only: true
+  cors: false
+  principal-attribute: preferred_username
+  public-client: false
+  realm: prox
+  resource: module-service
+server:
+  port: 9001
+  use-forward-headers: true
+spring:
+  application:
+    name: module-service
+  datasource:
+    password: module-service
+    url: jdbc:postgresql://module-db:5432/module-db
+    username: module-service
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+      jdbc:
+        lob:
+          non_contextual_creation: true
