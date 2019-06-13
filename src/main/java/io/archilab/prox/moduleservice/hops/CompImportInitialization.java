@@ -68,8 +68,7 @@ public class CompImportInitialization {
     } catch (Exception e) {
       CompImportInitialization.log.info("Failed to import " + type);
       CompImportInitialization.log.info("Import " + type + " from local file");
-      TypeReference<List<?>> typeReference = new TypeReference<List<?>>() {
-      };
+      TypeReference<List<?>> typeReference = new TypeReference<List<?>>() {};
       InputStream inputStream = TypeReference.class.getResourceAsStream("/data/" + type + ".json");
       try {
         ObjectMapper objectMapper = new ObjectMapper();

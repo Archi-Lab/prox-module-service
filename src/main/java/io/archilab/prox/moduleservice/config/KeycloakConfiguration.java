@@ -56,10 +56,8 @@ class KeycloakConfiguration extends KeycloakWebSecurityConfigurerAdapter {
     super.configure(http);
     http
         // .cors()
-
         // .and()
-        // TODO vlt. in Zukunft csrf protection aktiveren, dann müsste im Client ein solches Token
-        // immer mitgeschickt werden
+        // TODO vlt. in Zukunft csrf protection aktiveren, dann müsste im Client ein solches Token immer mitgeschickt werden
         .csrf().disable().sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // STATELESS
         .sessionAuthenticationStrategy(this.sessionAuthenticationStrategy()).and()
@@ -73,10 +71,7 @@ class KeycloakConfiguration extends KeycloakWebSecurityConfigurerAdapter {
         .denyAll().antMatchers("/studyCourses/*").denyAll().antMatchers("/studyCourses/**")
         .denyAll().antMatchers("/").permitAll().antMatchers("/profile*").permitAll()
         .antMatchers("/profile/*").permitAll().antMatchers("/profile/**").permitAll()
-
         .anyRequest().denyAll();
-    // .anyRequest().permitAll();
-
   }
 
 

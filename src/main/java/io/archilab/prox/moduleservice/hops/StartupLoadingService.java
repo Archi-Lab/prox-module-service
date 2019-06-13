@@ -38,8 +38,7 @@ public class StartupLoadingService {
   private ModuleRepository moduleRepository;
 
   public void updateData(ArrayList<HopsModule> hopsModuleGET,
-      ArrayList<HopsStudyCourse> hopsStudyCourseGET,
-      ArrayList<HopsCurriculum> mappingHopsGET) {
+      ArrayList<HopsStudyCourse> hopsStudyCourseGET, ArrayList<HopsCurriculum> mappingHopsGET) {
 
     // doppleungune entfernen
     for (int i = 0; i < hopsModuleGET.size(); i++) {
@@ -91,8 +90,7 @@ public class StartupLoadingService {
 
     hopsModuleGET.removeIf(hopsModule -> hopsModule.getMODULKUERZEL().equals("1384"));
 
-    mappingHopsGET
-        .removeIf(hopsCurriculum -> hopsCurriculum.getMODULKUERZEL().equals("1384"));
+    mappingHopsGET.removeIf(hopsCurriculum -> hopsCurriculum.getMODULKUERZEL().equals("1384"));
 
     // doppelungen entfernen HopsCurriculum aber nur vlt. weil dort nur ide kürzel von intersse
     // sind, nciht die weiteren daten. und der primary key unklar ist.
