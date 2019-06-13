@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 
 @Configuration
 @EnableWebSecurity
-class KeyCon extends KeycloakWebSecurityConfigurerAdapter {
+class KeycloakConfiguration extends KeycloakWebSecurityConfigurerAdapter {
 
   /**
    * Registers the KeycloakAuthenticationProvider with the authentication manager.
@@ -60,7 +60,8 @@ class KeyCon extends KeycloakWebSecurityConfigurerAdapter {
         // .and()
         // TODO vlt. in Zukunft csrf protection aktiveren, dann müsste im Client ein solches Token
         // immer mitgeschickt werden
-        .csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // STATELESS
+        .csrf().disable().sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // STATELESS
         .sessionAuthenticationStrategy(this.sessionAuthenticationStrategy()).and()
         .authorizeRequests().antMatchers(HttpMethod.GET, "/modules*").permitAll()
         .antMatchers(HttpMethod.GET, "/modules/*").permitAll()
