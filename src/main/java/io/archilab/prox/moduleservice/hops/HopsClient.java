@@ -14,7 +14,7 @@ public interface HopsClient {
   ArrayList<HopsStudyCourse> getStudiengänge();
 
   @GetMapping("/gettables.php?table=MODULECURRICULUM")
-  ArrayList<ModStuMappingHOPS> getModuleCuriculum();
+  ArrayList<HopsCurriculum> getModuleCuriculum();
 
 
 }

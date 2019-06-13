@@ -8,7 +8,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ModStuMappingHOPS {
+public class HopsCurriculum {
 
   // @JsonProperty("ZUORDNUNG_CURRICULUM")
   // private String ZUORDNUNG_CURRICULUM;

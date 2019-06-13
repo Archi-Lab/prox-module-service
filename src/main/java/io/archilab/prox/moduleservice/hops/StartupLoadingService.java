@@ -39,7 +39,7 @@ public class StartupLoadingService {
 
   public void updateData(ArrayList<HopsModule> hopsModuleGET,
       ArrayList<HopsStudyCourse> hopsStudyCourseGET,
-      ArrayList<ModStuMappingHOPS> mappingHopsGET) {
+      ArrayList<HopsCurriculum> mappingHopsGET) {
 
     // doppleungune entfernen
     for (int i = 0; i < hopsModuleGET.size(); i++) {
@@ -92,9 +92,9 @@ public class StartupLoadingService {
     hopsModuleGET.removeIf(hopsModule -> hopsModule.getMODULKUERZEL().equals("1384"));
 
     mappingHopsGET
-        .removeIf(modStuMappingHOPS -> modStuMappingHOPS.getMODULKUERZEL().equals("1384"));
+        .removeIf(hopsCurriculum -> hopsCurriculum.getMODULKUERZEL().equals("1384"));
 
-    // doppelungen entfernen ModStuMappingHOPS aber nur vlt. weil dort nur ide kürzel von intersse
+    // doppelungen entfernen HopsCurriculum aber nur vlt. weil dort nur ide kürzel von intersse
     // sind, nciht die weiteren daten. und der primary key unklar ist.
     // wenn sich die kürzel nicht ändern können, macht es keinen sinn.
 
@@ -158,10 +158,10 @@ public class StartupLoadingService {
       // continue;
       // }
 
-      ArrayList<ModStuMappingHOPS> doppelt = new ArrayList<>();
+      ArrayList<HopsCurriculum> doppelt = new ArrayList<>();
 
       String kürzel = module.getMODULKUERZEL();
-      for (ModStuMappingHOPS mapping : mappingHopsGET) {
+      for (HopsCurriculum mapping : mappingHopsGET) {
         // finde das modul
         if (mapping.getMODULKUERZEL().equals(kürzel)) {
           doppelt.add(mapping);
@@ -189,7 +189,7 @@ public class StartupLoadingService {
       }
 
       // regel: jedes Modul hat max. 1 studiengang. Daher werden gewisse Hops Module geklont.
-      for (ModStuMappingHOPS doppelEle : doppelt) {
+      for (HopsCurriculum doppelEle : doppelt) {
 
         // teste, ob das element bereits existiert
         Optional<HopsStudyCourseMapping> hopsScMap = this.hopsStudyCourseMappingRepository

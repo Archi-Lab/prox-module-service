@@ -42,7 +42,7 @@ public class CompImportInitialization {
         (ArrayList<HopsModule>) this.importData("MODULE", this.hopsClient::getModules);
     ArrayList<HopsStudyCourse> hopsStudyCourseGET = (ArrayList<HopsStudyCourse>) this
         .importData("MSTUDIENGANGRICHTUNG", this.hopsClient::getStudiengänge);
-    ArrayList<ModStuMappingHOPS> mappingHopsGET = (ArrayList<ModStuMappingHOPS>) this
+    ArrayList<HopsCurriculum> mappingHopsGET = (ArrayList<HopsCurriculum>) this
         .importData("MODULECURRICULUM", this.hopsClient::getModuleCuriculum);
 
     CompImportInitialization.log.info("Retrieved all Data from HOPS");
