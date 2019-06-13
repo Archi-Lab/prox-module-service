@@ -37,13 +37,13 @@ public class StartupLoadingService {
   @Autowired
   private ModuleRepository moduleRepository;
 
-  public void updateData(ArrayList<ModuleHOPS> moduleHopsGET,
+  public void updateData(ArrayList<HopsModule> hopsModuleGET,
       ArrayList<HopsStudyCourse> hopsStudyCourseGET,
       ArrayList<ModStuMappingHOPS> mappingHopsGET) {
 
     // doppleungune entfernen
-    for (int i = 0; i < moduleHopsGET.size(); i++) {
-      ModuleHOPS module = moduleHopsGET.get(i);
+    for (int i = 0; i < hopsModuleGET.size(); i++) {
+      HopsModule module = hopsModuleGET.get(i);
       String inputDate = module.getDATEVERSION();
       SimpleDateFormat parser = new SimpleDateFormat("dd.mm.yy");
       Date date_active = null;
@@ -55,8 +55,8 @@ public class StartupLoadingService {
         e.printStackTrace();
       }
       boolean isOld = false;
-      for (int k = 0; k < moduleHopsGET.size(); k++) {
-        ModuleHOPS tempModule = moduleHopsGET.get(k);
+      for (int k = 0; k < hopsModuleGET.size(); k++) {
+        HopsModule tempModule = hopsModuleGET.get(k);
         Date date_other = null;
         try {
           date_other = parser.parse(tempModule.getDATEVERSION());
@@ -73,7 +73,7 @@ public class StartupLoadingService {
         }
       }
       if (isOld) {
-        moduleHopsGET.remove(i);
+        hopsModuleGET.remove(i);
         i--;
       }
     }
@@ -89,7 +89,7 @@ public class StartupLoadingService {
     // es gibt keinen anderen sinnhaften Unterschied.
     // daher muss es explizit gefiltert werden.
 
-    moduleHopsGET.removeIf(moduleHops -> moduleHops.getMODULKUERZEL().equals("1384"));
+    hopsModuleGET.removeIf(hopsModule -> hopsModule.getMODULKUERZEL().equals("1384"));
 
     mappingHopsGET
         .removeIf(modStuMappingHOPS -> modStuMappingHOPS.getMODULKUERZEL().equals("1384"));
@@ -141,7 +141,7 @@ public class StartupLoadingService {
     // module einarbeiten
     StartupLoadingService.log.info("module einarbeiten");
 
-    for (ModuleHOPS module : moduleHopsGET) {
+    for (HopsModule module : hopsModuleGET) {
 
       // Potentieller Filter
       // String bezeichnung = module.getMODULBEZEICHNUNG();
@@ -266,7 +266,7 @@ public class StartupLoadingService {
   }
 
   // Helper Funktion: erstellt neues Modul und füllt es mit daten aus dem Hops Modul
-  private Module createAndFillModule(ModuleHOPS module) {
+  private Module createAndFillModule(HopsModule module) {
     Module newM = new Module(new ModuleName(""), new ModuleDescription(""));
     this.fillModule(newM, module);
     return newM;
@@ -274,7 +274,7 @@ public class StartupLoadingService {
 
 
   // Helper Funktion: füllt ein Modul mit daten aus dem Hops Modul
-  private void fillModule(Module newModule, ModuleHOPS module) {
+  private void fillModule(Module newModule, HopsModule module) {
     newModule.setName(new ModuleName(module.getMODULBEZEICHNUNG()));
     newModule.setDescription(
         new ModuleDescription((module.getINHALT() != null ? module.getINHALT() : "")));
