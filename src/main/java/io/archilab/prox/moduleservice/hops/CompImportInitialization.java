@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
 public class CompImportInitialization {
 
   @Autowired
-  private HopsApiGet hopsApiGet;
+  private HopsClient hopsClient;
 
 
   @Autowired
@@ -39,11 +39,11 @@ public class CompImportInitialization {
     CompImportInitialization.log.info("Start Data Import HOPS");
 
     ArrayList<ModuleHOPS> moduleHopsGET =
-        (ArrayList<ModuleHOPS>) this.importData("MODULE", this.hopsApiGet::getModules);
+        (ArrayList<ModuleHOPS>) this.importData("MODULE", this.hopsClient::getModules);
     ArrayList<StudiengängeHOPS> studiengängeHopsGET = (ArrayList<StudiengängeHOPS>) this
-        .importData("MSTUDIENGANGRICHTUNG", this.hopsApiGet::getStudiengänge);
+        .importData("MSTUDIENGANGRICHTUNG", this.hopsClient::getStudiengänge);
     ArrayList<ModStuMappingHOPS> mappingHopsGET = (ArrayList<ModStuMappingHOPS>) this
-        .importData("MODULECURRICULUM", this.hopsApiGet::getModuleCuriculum);
+        .importData("MODULECURRICULUM", this.hopsClient::getModuleCuriculum);
 
     CompImportInitialization.log.info("Retrieved all Data from HOPS");
 
@@ -68,7 +68,8 @@ public class CompImportInitialization {
     } catch (Exception e) {
       CompImportInitialization.log.info("Failed to import " + type);
       CompImportInitialization.log.info("Import " + type + " from local file");
-      TypeReference<List<?>> typeReference = new TypeReference<List<?>>() {};
+      TypeReference<List<?>> typeReference = new TypeReference<List<?>>() {
+      };
       InputStream inputStream = TypeReference.class.getResourceAsStream("/data/" + type + ".json");
       try {
         ObjectMapper objectMapper = new ObjectMapper();

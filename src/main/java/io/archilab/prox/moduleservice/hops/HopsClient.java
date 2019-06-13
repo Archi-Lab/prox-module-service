@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @FeignClient(name = "HopsApiGet", url = "https://fhpwww.gm.fh-koeln.de/hops/api/project")
-public interface HopsApiGet {
+public interface HopsClient {
 
   // tabelle für module
   @GetMapping("/gettables.php?table=MODULE")
