@@ -22,7 +22,7 @@ public class CompImportInitialization {
 
 
   @Autowired
-  private StartupLoadingService startupLoadingService;
+  private HopsImportService hopsImportService;
 
   @Bean
   public SmartInitializingSingleton importProcessor() {
@@ -49,7 +49,7 @@ public class CompImportInitialization {
 
     CompImportInitialization.log.info("Save and Update");
 
-    this.startupLoadingService.updateData(hopsModuleGET, hopsStudyCourseGET, mappingHopsGET);
+    this.hopsImportService.updateData(hopsModuleGET, hopsStudyCourseGET, mappingHopsGET);
 
   }
 

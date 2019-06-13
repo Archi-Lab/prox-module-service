@@ -16,31 +16,34 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
 @Slf4j
-public class StartupLoadingService {
+public class HopsImportService {
 
-  @Autowired
-  private HopsModuleMappingRepository hopsModuleMappingRepository;
+  private final HopsModuleMappingRepository hopsModuleMappingRepository;
 
-  @Autowired
-  private HopsStudyCourseMappingRepository hopsStudyCourseMappingRepository;
+  private final HopsStudyCourseMappingRepository hopsStudyCourseMappingRepository;
 
-  @Autowired
-  private StudyCourseRepository studyCourseRepository;
+  private final StudyCourseRepository studyCourseRepository;
 
-  @Autowired
-  private ModuleRepository moduleRepository;
+  private final ModuleRepository moduleRepository;
+
+  public HopsImportService(HopsModuleMappingRepository hopsModuleMappingRepository,
+      HopsStudyCourseMappingRepository hopsStudyCourseMappingRepository,
+      StudyCourseRepository studyCourseRepository, ModuleRepository moduleRepository) {
+    this.hopsModuleMappingRepository = hopsModuleMappingRepository;
+    this.hopsStudyCourseMappingRepository = hopsStudyCourseMappingRepository;
+    this.studyCourseRepository = studyCourseRepository;
+    this.moduleRepository = moduleRepository;
+  }
 
   public void updateData(ArrayList<HopsModule> hopsModuleGET,
       ArrayList<HopsStudyCourse> hopsStudyCourseGET, ArrayList<HopsCurriculum> mappingHopsGET) {
 
-    // doppleungune entfernen
     for (int i = 0; i < hopsModuleGET.size(); i++) {
       HopsModule module = hopsModuleGET.get(i);
       String inputDate = module.getDATEVERSION();
@@ -49,7 +52,7 @@ public class StartupLoadingService {
       try {
         date_active = parser.parse(inputDate);
       } catch (ParseException e) {
-        StartupLoadingService.log.info("Failed to parse Date");
+        HopsImportService.log.info("Failed to parse Date");
 
         e.printStackTrace();
       }
@@ -60,7 +63,7 @@ public class StartupLoadingService {
         try {
           date_other = parser.parse(tempModule.getDATEVERSION());
         } catch (ParseException e) {
-          StartupLoadingService.log.info("Failed to parse Date");
+          HopsImportService.log.info("Failed to parse Date");
 
           e.printStackTrace();
         }
@@ -109,7 +112,7 @@ public class StartupLoadingService {
       } else if (studyCourse.getABSCHLUSSART().equals("Bachelor")) {
         academicDegree = AcademicDegree.BACHELOR;
       } else {
-        StartupLoadingService.log.info(studyCourse.getABSCHLUSSART());
+        HopsImportService.log.info(studyCourse.getABSCHLUSSART());
         academicDegree = AcademicDegree.UNKNOWN;
       }
 
@@ -137,7 +140,7 @@ public class StartupLoadingService {
     }
 
     // module einarbeiten
-    StartupLoadingService.log.info("module einarbeiten");
+    HopsImportService.log.info("module einarbeiten");
 
     for (HopsModule module : hopsModuleGET) {
 
@@ -211,7 +214,7 @@ public class StartupLoadingService {
                   break;
                 }
               } else {
-                StartupLoadingService.log.info("missing map");
+                HopsImportService.log.info("missing map");
               }
             }
 
@@ -227,10 +230,10 @@ public class StartupLoadingService {
               tempSc = this.studyCourseRepository.save(tempSc);
             }
           } else {
-            StartupLoadingService.log.info("partly Error  study Course should not be missing ");
+            HopsImportService.log.info("partly Error  study Course should not be missing ");
           }
         } else {
-          StartupLoadingService.log.info(
+          HopsImportService.log.info(
               "partly Error  study Course mapping should not be missing, maybe Module not in use "
                   + doppelEle.getSG_KZ() + " " + doppelEle.getID());
         }
@@ -239,27 +242,27 @@ public class StartupLoadingService {
     }
 
     // Status Info über den Import
-    StartupLoadingService.log.info("Status Info");
+    HopsImportService.log.info("Status Info");
     {
       long size =
           StreamSupport.stream(this.moduleRepository.findAll().spliterator(), false).count();
-      StartupLoadingService.log.info("Anzahl Module: " + String.valueOf(size));
+      HopsImportService.log.info("Anzahl Module: " + String.valueOf(size));
     }
 
     {
       long size =
           StreamSupport.stream(this.studyCourseRepository.findAll().spliterator(), false).count();
-      StartupLoadingService.log.info("Anzahl Studiengänge: " + String.valueOf(size));
+      HopsImportService.log.info("Anzahl Studiengänge: " + String.valueOf(size));
     }
-    StartupLoadingService.log.info("Alle Studiengänge und Anzahl verlinkter Module");
+    HopsImportService.log.info("Alle Studiengänge und Anzahl verlinkter Module");
     {
       for (StudyCourse sc : this.studyCourseRepository.findAll()) {
-        StartupLoadingService.log.info("Name:   " + sc.getName());
-        StartupLoadingService.log.info("Module: " + String.valueOf(sc.getModules().size()));
+        HopsImportService.log.info("Name:   " + sc.getName());
+        HopsImportService.log.info("Module: " + String.valueOf(sc.getModules().size()));
       }
     }
 
-    StartupLoadingService.log.info("All Done. Start normal operation.");
+    HopsImportService.log.info("All Done. Start normal operation.");
 
   }
 
