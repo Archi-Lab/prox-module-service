@@ -40,7 +40,7 @@ public class CompImportInitialization {
 
     ArrayList<ModuleHOPS> moduleHopsGET =
         (ArrayList<ModuleHOPS>) this.importData("MODULE", this.hopsClient::getModules);
-    ArrayList<StudiengängeHOPS> studiengängeHopsGET = (ArrayList<StudiengängeHOPS>) this
+    ArrayList<HopsStudyCourse> hopsStudyCourseGET = (ArrayList<HopsStudyCourse>) this
         .importData("MSTUDIENGANGRICHTUNG", this.hopsClient::getStudiengänge);
     ArrayList<ModStuMappingHOPS> mappingHopsGET = (ArrayList<ModStuMappingHOPS>) this
         .importData("MODULECURRICULUM", this.hopsClient::getModuleCuriculum);
@@ -49,7 +49,7 @@ public class CompImportInitialization {
 
     CompImportInitialization.log.info("Save and Update");
 
-    this.startupLoadingService.updateData(moduleHopsGET, studiengängeHopsGET, mappingHopsGET);
+    this.startupLoadingService.updateData(moduleHopsGET, hopsStudyCourseGET, mappingHopsGET);
 
   }
 

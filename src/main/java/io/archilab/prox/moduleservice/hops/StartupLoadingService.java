@@ -38,7 +38,7 @@ public class StartupLoadingService {
   private ModuleRepository moduleRepository;
 
   public void updateData(ArrayList<ModuleHOPS> moduleHopsGET,
-      ArrayList<StudiengängeHOPS> studiengängeHopsGET,
+      ArrayList<HopsStudyCourse> hopsStudyCourseGET,
       ArrayList<ModStuMappingHOPS> mappingHopsGET) {
 
     // doppleungune entfernen
@@ -99,7 +99,7 @@ public class StartupLoadingService {
     // wenn sich die kürzel nicht ändern können, macht es keinen sinn.
 
     // study courses vorbereiten
-    for (StudiengängeHOPS studyCourse : studiengängeHopsGET) {
+    for (HopsStudyCourse studyCourse : hopsStudyCourseGET) {
       String kürzel = studyCourse.getSG_KZ();
       Optional<HopsStudyCourseMapping> scMapping =
           this.hopsStudyCourseMappingRepository.findByHopsId(new HopsStudyCourseId(kürzel));

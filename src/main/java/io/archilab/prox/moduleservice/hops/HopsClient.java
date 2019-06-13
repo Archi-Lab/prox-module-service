@@ -7,15 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 @FeignClient(name = "HopsApiGet", url = "https://fhpwww.gm.fh-koeln.de/hops/api/project")
 public interface HopsClient {
 
-  // tabelle für module
   @GetMapping("/gettables.php?table=MODULE")
   ArrayList<ModuleHOPS> getModules();
 
-  // tabelle für studiengang und vertiefung
   @GetMapping("/gettables.php?table=MSTUDIENGANGRICHTUNG")
-  ArrayList<StudiengängeHOPS> getStudiengänge();
+  ArrayList<HopsStudyCourse> getStudiengänge();
 
-  // zwischentabelle mapping module studiengang
   @GetMapping("/gettables.php?table=MODULECURRICULUM")
   ArrayList<ModStuMappingHOPS> getModuleCuriculum();
 
