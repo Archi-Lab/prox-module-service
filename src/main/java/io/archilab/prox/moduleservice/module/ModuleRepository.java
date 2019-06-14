@@ -1,4 +1,4 @@
-package io.archilab.prox.moduleservice.studycourse;
+package io.archilab.prox.moduleservice.module;
 
 import java.util.UUID;
 import org.springframework.data.domain.Page;

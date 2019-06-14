@@ -1,4 +1,4 @@
-package io.archilab.prox.moduleservice.studycourse;
+package io.archilab.prox.moduleservice.module;
 
 public enum AcademicDegree {
 

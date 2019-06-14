@@ -1,4 +1,4 @@
-package io.archilab.prox.moduleservice.studycourse;
+package io.archilab.prox.moduleservice.module;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import io.archilab.prox.moduleservice.core.AbstractEntity;

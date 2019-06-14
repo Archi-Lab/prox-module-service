@@ -1,13 +1,13 @@
 package io.archilab.prox.moduleservice.hops;
 
-import io.archilab.prox.moduleservice.studycourse.AcademicDegree;
-import io.archilab.prox.moduleservice.studycourse.Module;
-import io.archilab.prox.moduleservice.studycourse.ModuleDescription;
-import io.archilab.prox.moduleservice.studycourse.ModuleName;
-import io.archilab.prox.moduleservice.studycourse.ModuleRepository;
-import io.archilab.prox.moduleservice.studycourse.StudyCourse;
-import io.archilab.prox.moduleservice.studycourse.StudyCourseName;
-import io.archilab.prox.moduleservice.studycourse.StudyCourseRepository;
+import io.archilab.prox.moduleservice.module.AcademicDegree;
+import io.archilab.prox.moduleservice.module.Module;
+import io.archilab.prox.moduleservice.module.ModuleDescription;
+import io.archilab.prox.moduleservice.module.ModuleName;
+import io.archilab.prox.moduleservice.module.ModuleRepository;
+import io.archilab.prox.moduleservice.module.StudyCourse;
+import io.archilab.prox.moduleservice.module.StudyCourseName;
+import io.archilab.prox.moduleservice.module.StudyCourseRepository;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
