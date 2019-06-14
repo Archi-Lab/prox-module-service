@@ -1,5 +1,7 @@
 package io.archilab.prox.moduleservice.hops;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.archilab.prox.moduleservice.module.AcademicDegree;
 import io.archilab.prox.moduleservice.module.Module;
 import io.archilab.prox.moduleservice.module.ModuleDescription;
@@ -8,12 +10,14 @@ import io.archilab.prox.moduleservice.module.ModuleRepository;
 import io.archilab.prox.moduleservice.module.StudyCourse;
 import io.archilab.prox.moduleservice.module.StudyCourseName;
 import io.archilab.prox.moduleservice.module.StudyCourseRepository;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class HopsImportService {
 
+  private final HopsClient hopsClient;
+
   private final HopsModuleMappingRepository hopsModuleMappingRepository;
 
   private final HopsStudyCourseMappingRepository hopsStudyCourseMappingRepository;
@@ -32,13 +38,77 @@ public class HopsImportService {
 
   private final ModuleRepository moduleRepository;
 
-  public HopsImportService(HopsModuleMappingRepository hopsModuleMappingRepository,
+  private final ObjectMapper objectMapper;
+
+  public HopsImportService(HopsClient hopsClient,
+      HopsModuleMappingRepository hopsModuleMappingRepository,
       HopsStudyCourseMappingRepository hopsStudyCourseMappingRepository,
-      StudyCourseRepository studyCourseRepository, ModuleRepository moduleRepository) {
+      StudyCourseRepository studyCourseRepository, ModuleRepository moduleRepository,
+      ObjectMapper objectMapper) {
+    this.hopsClient = hopsClient;
     this.hopsModuleMappingRepository = hopsModuleMappingRepository;
     this.hopsStudyCourseMappingRepository = hopsStudyCourseMappingRepository;
     this.studyCourseRepository = studyCourseRepository;
     this.moduleRepository = moduleRepository;
+    this.objectMapper = objectMapper;
+  }
+
+  public void importData() {
+    HopsImportService.log.info("Start import of HoPS data");
+
+    ArrayList<HopsModule> hopsModules =
+        (ArrayList<HopsModule>) this.fetchData("MODULE", this.hopsClient::getModules);
+    ArrayList<HopsStudyCourse> hopsStudyCourses = (ArrayList<HopsStudyCourse>) this
+        .fetchData("MSTUDIENGANGRICHTUNG", this.hopsClient::getStudyCourses);
+    ArrayList<HopsCurriculum> hopsCurricula = (ArrayList<HopsCurriculum>) this
+        .fetchData("MODULECURRICULUM", this.hopsClient::getCurricula);
+
+    HopsImportService.log.info("Retrieved all data from HoPS");
+
+    HopsImportService.log.info("Save and Update");
+
+    this.updateData(hopsModules, hopsStudyCourses, hopsCurricula);
+  }
+
+  private ArrayList<?> fetchData(String type, Supplier<ArrayList> supplier) {
+    ArrayList<?> dataToImport = null;
+    // try {
+    HopsImportService.log.info("Import " + type + "from HoPS API");
+    dataToImport = supplier.get();
+    if (dataToImport == null) {
+      // HopsImportService.log.info("Failed to import variable is null");
+      // throw new RuntimeException("Failed to import variable is null");
+      HopsImportService.log.info("Failed to import " + type + " from HoPS API");
+      HopsImportService.log.info("Import " + type + " from backup file");
+      TypeReference<List<?>> typeReference = new TypeReference<List<?>>() {};
+      InputStream inputStream = TypeReference.class.getResourceAsStream("/data/" + type + ".json");
+      try {
+        // ObjectMapper objectMapper = new ObjectMapper();
+        dataToImport = this.objectMapper.readValue(inputStream, typeReference);
+        HopsImportService.log.info("Import of " + type + " from file was successful!");
+      } catch (Exception e) {
+        HopsImportService.log.error("Failed to import " + type + " from file", e);
+      }
+    } else {
+      HopsImportService.log.info("Import " + type + " from HoPS API was successful!");
+    }
+    // } catch (Exception e1) {
+    // HopsImportService.log.info("Failed to import " + type);
+    // HopsImportService.log.info("Import " + type + " from local file");
+    // TypeReference<List<?>> typeReference = new TypeReference<List<?>>() {};
+    // InputStream inputStream = TypeReference.class.getResourceAsStream("/data/" + type + ".json");
+    // try {
+    // ObjectMapper objectMapper = new ObjectMapper();
+    //
+    // dataToImport = objectMapper.readValue(inputStream, typeReference);
+    // HopsImportService.log.info("Import from file successfully done!");
+    // } catch (Exception e2) {
+    // HopsImportService.log.info("Failed to import " + type + " from file");
+    // e2.printStackTrace();
+    // }
+    // }
+
+    return dataToImport;
   }
 
   public void updateData(ArrayList<HopsModule> hopsModuleGET,
