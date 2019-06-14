@@ -1,7 +1,6 @@
 package io.archilab.prox.moduleservice.module;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,7 @@ public class JpaIntegrationTests {
     assertThat(this.moduleRepository.findAll()).contains(am, fae, bi, eam);
     assertThat(
         this.studyCourseRepository.findById(computerScience.getId()).get().getStudyDirections())
-        .contains(softwareEngineering, informationSystems);
+            .contains(softwareEngineering, informationSystems);
     assertThat(this.studyCourseRepository.findById(softwareEngineering.getId()).get()
         .getParentStudyCourse()).isEqualTo(computerScience);
     assertThat(this.studyCourseRepository.findById(informationSystems.getId()).get()
