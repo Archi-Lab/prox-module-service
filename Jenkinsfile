@@ -1,8 +1,8 @@
 pipeline {
     agent any
     tools {
-        maven "apache-maven-3.6.0"
-        jdk "JDK_8u191"
+        maven "apache-maven-3.6.1"
+        jdk "oracle-jdk-8u212"
     }
     environment {
         REPOSITORY = "ptb-gp-ss2019.archi-lab.io"
