@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement
-public class RestConfiguration implements RepositoryRestConfigurer {
+public class RestConfig implements RepositoryRestConfigurer {
 
   @Autowired
   private EntityManager entityManager;

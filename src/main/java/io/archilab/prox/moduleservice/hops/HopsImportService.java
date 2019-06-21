@@ -284,7 +284,7 @@ public class HopsImportService {
 
     for (StudyCourse studyCourse : this.studyCourseRepository.findAll()) {
       HopsImportService.log.info("Name:   " + studyCourse.getName());
-      HopsImportService.log.info("Module: " + studyCourse.getModules().size());
+      HopsImportService.log.info("Modules: " + studyCourse.getModules().size());
     }
 
     HopsImportService.log.info("Import complete!");

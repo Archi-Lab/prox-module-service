@@ -8,17 +8,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @Slf4j
-public class ModuleImportConfiguration {
-
-  private final HopsImportService hopsImportService;
-
-  public ModuleImportConfiguration(HopsImportService hopsImportService) {
-    this.hopsImportService = hopsImportService;
-  }
+public class ImportConfig {
 
   @Bean
-  CommandLineRunner runImport() {
-    return args -> this.hopsImportService.importData();
+  CommandLineRunner runImport(HopsImportService hopsImportService) {
+    return args -> hopsImportService.importData();
   }
 
 }
