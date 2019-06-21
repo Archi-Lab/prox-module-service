@@ -4,8 +4,6 @@ services:
 
   module-service:
     image: docker.nexus.archi-lab.io/archilab/prox-module-service
-    ports:
-      - "9001:9001"
     restart: always
     networks:
       - prox
