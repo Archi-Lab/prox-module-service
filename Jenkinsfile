@@ -10,7 +10,7 @@ pipeline {
         REPOSITORY  = "docker.nexus.archi-lab.io/archilab"
         IMAGE       = "prox-module-service"
         SERVERNAME  = "fsygs15.inf.fh-koeln.de"
-        SERVERPORT  = "22412"
+        SERVERPORT  = "22413"
         SSHUSER     = "jenkins"
         YMLFILENAME = "docker-compose-module-service.yml"
     }
