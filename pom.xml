@@ -143,7 +143,6 @@
         <version>${formatter-maven.version}</version>
         <configuration>
           <configFile>${project.basedir}/eclipse-java-google-style.xml</configFile>
-          <lineEnding>LF</lineEnding>
         </configuration>
         <executions>
           <execution>
