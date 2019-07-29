@@ -1,36 +1,28 @@
-pipeline {
-    agent any
+node {
+    def revision = env.BUILD_NUMBER
 
-    tools {
-        maven "apache-maven-3.6.1"
-        jdk "oracle-jdk-8u212"
-    }
+    stage('Build') {
+        docker.image('maven:3.6.1-jdk-8-alpine').inside {
+            git url: 'https://github.com/Archi-Lab/prox-module-service.git'
+            git branch: 'jenkins-migration'
 
-    environment {
-        REPOSITORY  = "docker.nexus.archi-lab.io/archilab"
-        IMAGE       = "prox-module-service"
-        SERVERNAME  = "fsygs15.inf.fh-koeln.de"
-        SERVERPORT  = "22413"
-        SSHUSER     = "jenkins"
-        YMLFILENAME = "docker-compose-module-service.yml"
-    }
+            writeFile file: 'settings.xml', text: "<settings><localRepository>${pwd()}/.m2</localRepository></settings>"
 
-    stages {
-        stage("Build") {
-            steps {
-                sh "mvn clean package"
-                sh "docker image save -o ${IMAGE}.tar ${REPOSITORY}/${IMAGE}"
+            withCredentials([usernamePassword(credentialsId: 'archilab-nexus-jenkins', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+               sh "mvn -B -s settings.xml -Ddockerfile.username=\"$NEXUS_USERNAME\" -Ddockerfile.password=\"$NEXUS_PASSWORD\" -Drevision=${revision} clean deploy"
             }
         }
+    }
 
-        stage("Deploy") {
-            steps {
-                sh "scp -P ${SERVERPORT} -v ${IMAGE}.tar ${SSHUSER}@${SERVERNAME}:~/"
-                sh "scp -P ${SERVERPORT} -v ${YMLFILENAME} ${SSHUSER}@${SERVERNAME}:/srv/prox/"
-                sh "ssh -p ${SERVERPORT} ${SSHUSER}@${SERVERNAME} " +
-                    "'docker image load -i ${IMAGE}.tar; " +
-                    "docker network inspect prox &> /dev/null || docker network create prox; " +
-                    "docker-compose -p prox -f /srv/prox/${YMLFILENAME} up -d'"
+    stage('Deploy') {
+        docker.withServer('tcp://10.10.10.41:2376', 'prox-prod-certs') {
+            def pom = readMavenPom file: 'pom.xml'
+            def image = pom.getArtifactId()
+            def release = pom.getProperties().getProperty('release')
+            def tag = "${release}" + '-' + "${revision}"
+
+            docker.withRegistry('https://docker.nexus.archi-lab.io', 'archilab-nexus-jenkins') {
+                sh "env IMAGE=${image} TAG=${tag} docker stack deploy --with-registry-auth -c docker-compose.yml ${image}"
             }
         }
     }
