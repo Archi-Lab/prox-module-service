@@ -5,7 +5,7 @@ modules, relevant for projects and topics inside Prox.
 
 ## Installation
 
-``` bash
+```bash
 mvn clean install
 ```
 
@@ -14,10 +14,20 @@ Executes the
 up to the install phase. During package phase a runnable JAR is created and
 during install phase a docker image is build.
 
-## Usage
+## Local usage
 
-``` bash
-docker-compose -f docker-compose-module-service.yml up
+Powershell
+```posh
+$env:IMAGE='prox-module-service'; `
+$env:TAG='latest'; `
+docker-compose -f docker-compose.yml up
+```
+
+Bash/Shell
+```bash
+export IMAGE="prox-module-service" &&
+export TAG="latest" &&
+docker-compose -f docker-compose.yml up
 ```
 
 Starts a Docker container based on the compose file and the image. A Docker
