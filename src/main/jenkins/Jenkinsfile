@@ -22,7 +22,7 @@ node {
             def tag = "${release}" + '-' + "${revision}"
 
             docker.withRegistry('https://docker.nexus.archi-lab.io', 'archilab-nexus-jenkins') {
-                sh "env IMAGE=${image} TAG=${tag} docker stack deploy --with-registry-auth -c docker-compose.yml ${image}"
+                sh "env IMAGE=${image} TAG=${tag} docker stack deploy --with-registry-auth -c src/main/docker/docker-compose.yml -c src/main/docker/docker-compose.prod.yml ${image}"
             }
         }
     }
