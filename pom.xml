@@ -201,15 +201,13 @@
         </configuration>
         <executions>
           <execution>
-            <id>default</id>
-            <phase>install</phase>
+            <id>docker-build</id>
             <goals>
               <goal>build</goal>
             </goals>
           </execution>
           <execution>
-            <id>tag-version</id>
-            <phase>install</phase>
+            <id>docker-tag</id>
             <goals>
               <goal>tag</goal>
             </goals>
@@ -218,8 +216,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>push-version</id>
-            <phase>deploy</phase>
+            <id>docker-push</id>
             <goals>
               <goal>push</goal>
             </goals>
