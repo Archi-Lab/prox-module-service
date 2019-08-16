@@ -1,11 +1,13 @@
 node {
     def revision = "dev-${env.BUILD_NUMBER}"
 
+    stage('Checkout') {
+        git branch: 'dev'
+        git url: 'https://github.com/Archi-Lab/prox-web-client.git'
+    }
+
     stage('Build') {
         docker.image('maven:3.6.1-jdk-8-alpine').inside {
-//            git url: 'https://github.com/Archi-Lab/prox-module-service.git'
-//            git branch: 'dev'
-
             writeFile file: 'settings.xml', text: "<settings><localRepository>${pwd()}/.m2</localRepository></settings>"
 
             withCredentials([usernamePassword(credentialsId: 'archilab-nexus-jenkins', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
