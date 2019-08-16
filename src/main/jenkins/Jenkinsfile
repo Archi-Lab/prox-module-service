@@ -1,5 +1,5 @@
 node {
-    def revision = env.BUILD_NUMBER
+    def revision = "dev-${env.BUILD_NUMBER}"
 
     stage('Build') {
         docker.image('maven:3.6.1-jdk-8-alpine').inside {
@@ -19,7 +19,7 @@ node {
             def pom = readMavenPom file: 'pom.xml'
             def image = pom.getArtifactId()
             def release = pom.getProperties().getProperty('release')
-            def tag = "${release}-dev-${revision}"
+            def tag = "${release}-${revision}"
 
             docker.withRegistry('https://docker.nexus.archi-lab.io', 'archilab-nexus-jenkins') {
                 sh "env IMAGE=${image} TAG=${tag} docker stack deploy --with-registry-auth -c src/main/docker/docker-compose.yml -c src/main/docker/docker-compose.prod.yml ${image}"
