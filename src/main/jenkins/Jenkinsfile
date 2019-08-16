@@ -3,7 +3,7 @@ node {
 
     stage('Checkout') {
         git branch: 'dev'
-        git url: 'https://github.com/Archi-Lab/prox-web-client.git'
+        git url: 'https://github.com/Archi-Lab/prox-module-service.git'
     }
 
     stage('Build') {
