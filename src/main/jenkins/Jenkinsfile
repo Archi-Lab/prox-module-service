@@ -2,8 +2,7 @@ node {
     def revision = "dev-${env.BUILD_NUMBER}"
 
     stage('Checkout') {
-        git url: 'https://github.com/Archi-Lab/prox-module-service.git'
-        git branch: 'dev'
+        checkout scm
     }
 
     stage('Build') {
