@@ -1,9 +1,9 @@
 node {
-    def revision = "dev-${env.BUILD_NUMBER}"
+    def revision = "${env.BUILD_NUMBER}"
 
     stage('Checkout') {
         git url: 'https://github.com/Archi-Lab/prox-module-service.git'
-        git branch: 'dev'
+        git branch: 'master'
     }
 
     stage('Build') {
@@ -17,7 +17,7 @@ node {
     }
 
     stage('Deploy') {
-        docker.withServer('tcp://10.10.10.42:2376', 'prox-dev-certs') {
+        docker.withServer('tcp://10.10.10.41:2376', 'prox-prod-certs') {
             def pom = readMavenPom file: 'pom.xml'
             def image = pom.getArtifactId()
             def release = pom.getProperties().getProperty('release')
