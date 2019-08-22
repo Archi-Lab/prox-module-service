@@ -9,7 +9,7 @@ keycloak:
   principal-attribute: preferred_username
   public-client: false
   realm: archilab
-  resource: module-service
+  resource: prox-module-service
 server:
   port: 9001
   use-forward-headers: true
