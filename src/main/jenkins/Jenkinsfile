@@ -1,5 +1,5 @@
 node {
-    def changelist = "dev-${env.BUILD_NUMBER}"
+    def changelist = "gp-ws2019-${env.BUILD_NUMBER}"
 
     stage('Checkout') {
         checkout scm
@@ -16,7 +16,7 @@ node {
     }
 
     stage('Deploy') {
-        docker.withServer('tcp://10.10.10.42:2376', 'prox-dev-certs') {
+        docker.withServer('tcp://10.10.10.43:2376', 'prox-gp-ws2019-certs') {
             def pom = readMavenPom file: 'pom.xml'
             def image = pom.getArtifactId()
             def revision = pom.getProperties().getProperty('revision')
