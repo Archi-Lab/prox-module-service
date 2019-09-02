@@ -1,6 +1,7 @@
 eureka:
   client:
-    enabled: false
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
 spring:
   datasource:
     password: module-service
