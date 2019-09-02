@@ -1,0 +1,15 @@
+eureka:
+  client:
+    enabled: false
+spring:
+  datasource:
+    password: module-service
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: module-service
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+      dialect: H2DialectCustom
+
