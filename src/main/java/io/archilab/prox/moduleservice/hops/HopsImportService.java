@@ -7,6 +7,7 @@ import io.archilab.prox.moduleservice.module.Module;
 import io.archilab.prox.moduleservice.module.ModuleDescription;
 import io.archilab.prox.moduleservice.module.ModuleName;
 import io.archilab.prox.moduleservice.module.ModuleRepository;
+import io.archilab.prox.moduleservice.module.ProjectType;
 import io.archilab.prox.moduleservice.module.StudyCourse;
 import io.archilab.prox.moduleservice.module.StudyCourseName;
 import io.archilab.prox.moduleservice.module.StudyCourseRepository;
@@ -16,7 +17,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
@@ -29,6 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class HopsImportService {
 
+  private static final Map<String[], ProjectType> projectTypeModuleNames = createProjectTypeModuleNamesMap();
+
   private final HopsClient hopsClient;
 
   private final HopsModuleMappingRepository hopsModuleMappingRepository;
@@ -40,6 +46,7 @@ public class HopsImportService {
   private final ModuleRepository moduleRepository;
 
   private final ObjectMapper objectMapper;
+
 
   public HopsImportService(HopsClient hopsClient,
       HopsModuleMappingRepository hopsModuleMappingRepository,
@@ -292,7 +299,7 @@ public class HopsImportService {
   }
 
   private Module createAndFillModule(HopsModule module) {
-    Module newM = new Module(new ModuleName(""), new ModuleDescription(""));
+    Module newM = new Module(new ModuleName(""), new ModuleDescription(""), ProjectType.UNDEFINED);
     this.fillModule(newM, module);
     return newM;
   }
@@ -301,6 +308,26 @@ public class HopsImportService {
     newModule.setName(new ModuleName(module.getMODULBEZEICHNUNG()));
     newModule.setDescription(
         new ModuleDescription((module.getINHALT() != null ? module.getINHALT() : "")));
+    newModule.setProjectType(retrieveProjectTypeFromHopsModule(module));
   }
 
+  private ProjectType retrieveProjectTypeFromHopsModule(HopsModule module) {
+    for (Entry<String[], ProjectType> entry : projectTypeModuleNames.entrySet()) {
+      for (String key : entry.getKey()) {
+        if (module.getMODULBEZEICHNUNG().equalsIgnoreCase(key)) {
+          return entry.getValue();
+        }
+      }
+    }
+
+    return ProjectType.UNDEFINED;
+  }
+
+  private static Map<String[], ProjectType> createProjectTypeModuleNamesMap() {
+    Map<String[], ProjectType> myMap = new HashMap<String[], ProjectType>();
+    myMap.put(new String[] {"Praxisprojekt"}, ProjectType.PP);
+    myMap.put(new String[] {"Bachelorarbeit", "Bachelor Arbeit "}, ProjectType.BA);
+    myMap.put(new String[] {"Masterarbeit", "Master Thesis (English)", "Masterarbeit und Kolloquium", "Masterarbeit und Kolloquium (German)"}, ProjectType.MA);
+    return myMap;
+  }
 }

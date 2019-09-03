@@ -27,9 +27,20 @@ public class Module extends AbstractEntity {
   @JsonUnwrapped
   private ModuleDescription description;
 
+  // This attribute is called projectType and not moduleType because project types such as PP, BA, MA, GP should not be mixed with other moduleTypes such as lextures or courses
+  @Setter
+  private ProjectType projectType;
+
+
   public Module(ModuleName name, ModuleDescription description) {
     this.name = name;
     this.description = description;
+    this.projectType = ProjectType.UNDEFINED;
   }
 
+  public Module(ModuleName name, ModuleDescription description, ProjectType projectType) {
+    this.name = name;
+    this.description = description;
+    this.projectType = projectType;
+  }
 }
