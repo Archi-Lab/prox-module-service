@@ -62,6 +62,10 @@ public class HopsImportService {
     this.objectMapper = objectMapper;
   }
 
+  public boolean hasData() {
+      return moduleRepository.count() > 0;
+  }
+
   public void importData() {
     HopsImportService.log.info("Start import of HoPS data");
 
