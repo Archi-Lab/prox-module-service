@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 import lombok.extern.slf4j.Slf4j;
@@ -102,6 +103,8 @@ public class HopsImportService {
 
   public void updateData(ArrayList<HopsModule> hopsModules,
       ArrayList<HopsStudyCourse> hopsStudyCourses, ArrayList<HopsCurriculum> hopsCurricula) {
+    long timeStart = System.currentTimeMillis();
+
     // for (int i = 0; i < hopsModules.size(); i++) {
     List<HopsModule> oldModules = new ArrayList<>();
     for (HopsModule currentModule : hopsModules) {
@@ -229,6 +232,12 @@ public class HopsImportService {
         this.moduleRepository.save(newModule);
       }
 
+      // Cache
+      HashMap<UUID, HopsModuleMapping> cachedModuleMappings = new HashMap<UUID, HopsModuleMapping>();
+      for (HopsModuleMapping mapping : this.hopsModuleMappingRepository.findAll()) {
+        cachedModuleMappings.put(mapping.getModuleId(), mapping);
+      }
+
       // regel: jedes Modul hat max. 1 studiengang. Daher werden gewisse Hops Module geklont.
       for (HopsCurriculum duplicateCurriculum : duplicateCurricula) {
         Optional<HopsStudyCourseMapping> studyCourseMapping = this.hopsStudyCourseMappingRepository
@@ -240,11 +249,9 @@ public class HopsImportService {
             boolean moduleMissing = true;
             StudyCourse studyCourse = optionalStudyCourse.get();
             for (Module tempModule : studyCourse.getModules()) {
-              Optional<HopsModuleMapping> tempModuleMapping =
-                  this.hopsModuleMappingRepository.findByModuleId(tempModule.getId());
-              if (tempModuleMapping.isPresent()) {
-                if (tempModuleMapping.get().getHopsId().getKuerzel()
-                    .equals(module.getMODULKUERZEL())) {
+              HopsModuleMapping tempModuleMapping = cachedModuleMappings.get(tempModule.getId());
+              if (tempModuleMapping != null) {
+                if (tempModuleMapping.getHopsId().getKuerzel().equals(module.getMODULKUERZEL())) {
                   moduleMissing = false;
                   break;
                 }
@@ -258,9 +265,11 @@ public class HopsImportService {
               newModule = this.moduleRepository.save(newModule);
 
               studyCourse.addModule(newModule);
-              this.hopsModuleMappingRepository.save(new HopsModuleMapping(
+              HopsModuleMapping newHopsModuleMapping = new HopsModuleMapping(
                   new HopsModuleId(module.getMODULKUERZEL(), module.getDATEVERSION()),
-                  newModule.getId()));
+                  newModule.getId());
+              this.hopsModuleMappingRepository.save(newHopsModuleMapping);
+              cachedModuleMappings.put(newHopsModuleMapping.getModuleId(), newHopsModuleMapping);
 
               this.studyCourseRepository.save(studyCourse);
             }
@@ -294,8 +303,8 @@ public class HopsImportService {
       HopsImportService.log.info("Modules: " + studyCourse.getModules().size());
     }
 
-    HopsImportService.log.info("Import complete!");
-
+    long timeEnd = System.currentTimeMillis();
+    HopsImportService.log.info("Import completed in " + (timeEnd-timeStart) + " ms");
   }
 
   private Module createAndFillModule(HopsModule module) {
