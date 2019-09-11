@@ -34,7 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class HopsImportService {
 
-  private static final Map<String[], ProjectType> projectTypeModuleNames = createProjectTypeModuleNamesMap();
+  private static final Map<String[], ProjectType> projectTypeModuleNames =
+      createProjectTypeModuleNamesMap();
 
   private final HopsClient hopsClient;
 
@@ -63,7 +64,7 @@ public class HopsImportService {
   }
 
   public boolean hasData() {
-      return moduleRepository.count() > 0;
+    return moduleRepository.count() > 0;
   }
 
   public void importData() {
@@ -237,7 +238,8 @@ public class HopsImportService {
       }
 
       // Cache
-      HashMap<UUID, HopsModuleMapping> cachedModuleMappings = new HashMap<UUID, HopsModuleMapping>();
+      HashMap<UUID, HopsModuleMapping> cachedModuleMappings =
+          new HashMap<UUID, HopsModuleMapping>();
       for (HopsModuleMapping mapping : this.hopsModuleMappingRepository.findAll()) {
         cachedModuleMappings.put(mapping.getModuleId(), mapping);
       }
@@ -308,7 +310,7 @@ public class HopsImportService {
     }
 
     long timeEnd = System.currentTimeMillis();
-    HopsImportService.log.info("Import completed in " + (timeEnd-timeStart) + " ms");
+    HopsImportService.log.info("Import completed in " + (timeEnd - timeStart) + " ms");
   }
 
   private Module createAndFillModule(HopsModule module) {
@@ -340,7 +342,8 @@ public class HopsImportService {
     Map<String[], ProjectType> myMap = new HashMap<String[], ProjectType>();
     myMap.put(new String[] {"Praxisprojekt"}, ProjectType.PP);
     myMap.put(new String[] {"Bachelorarbeit", "Bachelor Arbeit "}, ProjectType.BA);
-    myMap.put(new String[] {"Masterarbeit", "Master Thesis (English)", "Masterarbeit und Kolloquium", "Masterarbeit und Kolloquium (German)"}, ProjectType.MA);
+    myMap.put(new String[] {"Masterarbeit", "Master Thesis (English)",
+        "Masterarbeit und Kolloquium", "Masterarbeit und Kolloquium (German)"}, ProjectType.MA);
     return myMap;
   }
 }

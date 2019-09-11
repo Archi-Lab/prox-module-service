@@ -9,7 +9,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
-
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.concurrent.Executor;
@@ -36,29 +35,28 @@ public class ImportConfig implements SchedulingConfigurer {
   @Override
   public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
     taskRegistrar.setScheduler(taskExecutor());
-    taskRegistrar.addTriggerTask(
-            () -> hopsImportService.importData(),
-            triggerContext -> {
+    taskRegistrar.addTriggerTask(() -> hopsImportService.importData(), triggerContext -> {
 
-              Calendar nextExecutionTime = new GregorianCalendar();
+      Calendar nextExecutionTime = new GregorianCalendar();
 
-              if(initialStart){
-                initialStart = false;
-                return nextExecutionTime.getTime();
-              }
+      if (initialStart) {
+        initialStart = false;
+        return nextExecutionTime.getTime();
+      }
 
-              boolean hasData = hopsImportService.hasData();
+      boolean hasData = hopsImportService.hasData();
 
-              if (hasData) {
-                ImportConfig.log.info("importData: has data");
-                nextExecutionTime.add(Calendar.MINUTE, Integer.valueOf(env.getProperty("importHops.delay.hasData.minutes")));
-              } else {
-                ImportConfig.log.info("importData: has no data");
-                nextExecutionTime.add(Calendar.SECOND, Integer.valueOf(env.getProperty("importHops.delay.hasNoData.seconds")));
-              }
+      if (hasData) {
+        ImportConfig.log.info("importData: has data");
+        nextExecutionTime.add(Calendar.MINUTE,
+            Integer.valueOf(env.getProperty("importHops.delay.hasData.minutes")));
+      } else {
+        ImportConfig.log.info("importData: has no data");
+        nextExecutionTime.add(Calendar.SECOND,
+            Integer.valueOf(env.getProperty("importHops.delay.hasNoData.seconds")));
+      }
 
-              return nextExecutionTime.getTime();
-            }
-    );
+      return nextExecutionTime.getTime();
+    });
   }
 }
