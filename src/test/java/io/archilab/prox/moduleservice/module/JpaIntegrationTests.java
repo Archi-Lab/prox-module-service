@@ -42,10 +42,13 @@ public class JpaIntegrationTests {
     informationSystems.addModule(eam);
 
     this.studyCourseRepository.save(computerScience);
+    this.studyCourseRepository.save(softwareEngineering);
+    this.studyCourseRepository.save(informationSystems);
 
-//    assertThat(this.studyCourseRepository.findAll()).contains(computerScience, softwareEngineering,
-//        informationSystems);
-//    assertThat(this.moduleRepository.findAll()).contains(am, fae, bi, eam);
+
+    assertThat(this.studyCourseRepository.findAll()).contains(computerScience, softwareEngineering,
+        informationSystems);
+    assertThat(this.moduleRepository.findAll()).contains(am, fae, bi, eam);
 
   }
 
