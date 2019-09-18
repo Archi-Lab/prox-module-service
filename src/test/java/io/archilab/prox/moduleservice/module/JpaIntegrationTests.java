@@ -34,8 +34,6 @@ public class JpaIntegrationTests {
     Module eam = new Module(new ModuleName("Enterprise Architecture Management"),
         new ModuleDescription("Lorem ipsum"));
 
-    computerScience.addStudyDirection(softwareEngineering);
-    computerScience.addStudyDirection(informationSystems);
 
     softwareEngineering.addModule(am);
     softwareEngineering.addModule(fae);
@@ -48,13 +46,7 @@ public class JpaIntegrationTests {
     assertThat(this.studyCourseRepository.findAll()).contains(computerScience, softwareEngineering,
         informationSystems);
     assertThat(this.moduleRepository.findAll()).contains(am, fae, bi, eam);
-    assertThat(
-        this.studyCourseRepository.findById(computerScience.getId()).get().getStudyDirections())
-            .contains(softwareEngineering, informationSystems);
-    assertThat(this.studyCourseRepository.findById(softwareEngineering.getId()).get()
-        .getParentStudyCourse()).isEqualTo(computerScience);
-    assertThat(this.studyCourseRepository.findById(informationSystems.getId()).get()
-        .getParentStudyCourse()).isEqualTo(computerScience);
+
   }
 
 }
