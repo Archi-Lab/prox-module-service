@@ -30,28 +30,13 @@ public class StudyCourse extends AbstractEntity {
   @Setter
   private AcademicDegree academicDegree;
 
-  // @JoinTable(
-  // name = "module_courses",
-  // joinColumns = { @JoinColumn(name = "study_course_id", referencedColumnName = "id") },
-  // inverseJoinColumns = { @JoinColumn(name = "module_id", referencedColumnName = "id") } )
-
   @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
   @JoinColumn(name = "module_id")
   private Set<Module> modules = new HashSet<>();
 
-  @OneToMany(mappedBy = "parentStudyCourse", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<StudyCourse> studyDirections = new HashSet<>();
-
-  @ManyToOne
-  private StudyCourse parentStudyCourse;
-
   public StudyCourse(StudyCourseName name, AcademicDegree academicDegree) {
     this.name = name;
     this.academicDegree = academicDegree;
-  }
-
-  public Set<StudyCourse> getStudyDirections() {
-    return Collections.unmodifiableSet(this.studyDirections);
   }
 
   public Set<Module> getModules() {
@@ -68,36 +53,6 @@ public class StudyCourse extends AbstractEntity {
 
   public void removeAllModules() {
     this.modules = new HashSet<>();
-  }
-
-  public void addStudyDirection(StudyCourse studyDirection) {
-    if (studyDirection.getParentStudyCourse() != null) {
-      throw new RuntimeException("A study direction must only have one parent!");
-    }
-    if (this.academicDegree != studyDirection.getAcademicDegree()) {
-      throw new RuntimeException(
-          "A study direction must have the same academic degree as the corresponding study course!");
-    }
-    this.studyDirections.add(studyDirection);
-    studyDirection.setParentStudyCourse(this);
-  }
-
-  public void removeStudyDirection(StudyCourse studyDirection) {
-    this.studyDirections.remove(studyDirection);
-    studyDirection.setParentStudyCourse(null);
-  }
-
-  private void setParentStudyCourse(StudyCourse parentStudyCourse) {
-    if (parentStudyCourse != null) {
-      if (!this.studyDirections.isEmpty()) {
-        throw new RuntimeException("A study direction must not have study directions!");
-      }
-      if (this.academicDegree != parentStudyCourse.academicDegree) {
-        throw new RuntimeException(
-            "A study direction must have the same academic degree as the corresponding study course!");
-      }
-    }
-    this.parentStudyCourse = parentStudyCourse;
   }
 
 }
