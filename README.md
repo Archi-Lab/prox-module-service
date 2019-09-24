@@ -37,6 +37,9 @@ network named `prox` is required for the communication between services:
 docker network create prox
 ```
 
+## Local usage in IntelliJ IDEA
+For the necessary steps please look in [Run/Debug in IntelliJ IDEA](https://github.com/Archi-Lab/prox-local-setup#rundebug-in-intellij-idea).
+
 ## About the Team
 
 This service is currently developed by members of the ArchiLab staff:

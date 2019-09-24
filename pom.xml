@@ -10,7 +10,7 @@
 
   <groupId>io.archi-lab.prox</groupId>
   <artifactId>prox-module-service</artifactId>
-  <version>${revision}-${changelist}</version>
+  <version>${revision}${changelist}</version>
 
   <name>prox-module-service</name>
   <description>Prox Module Service</description>
@@ -23,7 +23,7 @@
     <keycloak.version>6.0.1</keycloak.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <revision>0.1.0</revision>
-    <changelist>SNAPSHOT</changelist>
+    <changelist>-SNAPSHOT</changelist>
     <spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
     <tidy-maven.version>1.1.0</tidy-maven.version>
   </properties>

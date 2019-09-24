@@ -1,4 +1,4 @@
-version: "3.6"
+version: "3.7"
 
 services:
 
@@ -10,6 +10,10 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://archilab-infra:12201"
 
   module-db:
     deploy:
@@ -19,3 +23,7 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://archilab-infra:12201"

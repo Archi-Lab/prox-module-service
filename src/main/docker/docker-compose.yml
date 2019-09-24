@@ -1,9 +1,9 @@
-version: "3.6"
+version: "3.7"
 
 services:
 
   module-service:
-    image: docker.nexus.archi-lab.io/archilab/${IMAGE}:${TAG}
+    image: ${REPOSITORY}/${IMAGE}:${TAG}
     networks:
       - prox
       - module-db
