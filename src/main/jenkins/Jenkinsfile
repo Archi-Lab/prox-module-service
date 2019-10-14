@@ -8,7 +8,7 @@ node {
 
     def server = 'tcp://10.10.10.41:2376'
     def certs = 'prox-prod-certs'
-    def tagPrefix = '-'
+    def tagPrefix = ''
 
     stage('Checkout') {
         checkout scm
