@@ -6,7 +6,7 @@ node {
     def image
     def tag
 
-    def server = 'tcp://10.10.10.42:2376'
+    def server = 'tcp://10.10.10.45:2376'
     def certs = 'prox-ip-ws2019-certs'
     def tagPrefix = '-ip-ws2019'
 
