@@ -34,6 +34,7 @@ node {
                     -Ddockerfile.username=\"$NEXUS_USERNAME\" \
                     -Ddockerfile.password=\"$NEXUS_PASSWORD\" \
                     -Dchangelist=${changelist} \
+                    -Dskip.npm \
                     clean deploy"
             }
         }
