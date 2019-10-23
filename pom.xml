@@ -16,14 +16,15 @@
   <description>Prox Module Service</description>
 
   <properties>
-    <docker.image.prefix>docker.nexus.archi-lab.io/archilab</docker.image.prefix>
+    <changelist>-SNAPSHOT</changelist>
     <dockerfile-maven.version>1.4.10</dockerfile-maven.version>
-    <formatter-maven.version>2.9.0</formatter-maven.version>
+    <docker.image.prefix>docker.nexus.archi-lab.io/archilab</docker.image.prefix>
+    <frontend-maven.version>1.8.0</frontend-maven.version>
     <java.version>1.8</java.version>
     <keycloak.version>6.0.1</keycloak.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <revision>0.1.0</revision>
-    <changelist>-SNAPSHOT</changelist>
+    <spotless.version>1.25.1</spotless.version>
     <spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
     <tidy-maven.version>1.1.0</tidy-maven.version>
   </properties>
@@ -152,19 +153,38 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>net.revelc.code.formatter</groupId>
-        <artifactId>formatter-maven-plugin</artifactId>
-        <version>${formatter-maven.version}</version>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>${frontend-maven.version}</version>
         <configuration>
-          <configFile>${project.basedir}/eclipse-java-google-style.xml</configFile>
+          <nodeVersion>v12.12.0</nodeVersion>
         </configuration>
         <executions>
           <execution>
+            <id>install node and npm</id>
             <goals>
-              <goal>format</goal>
+              <goal>install-node-and-npm</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>npm install</id>
+            <goals>
+              <goal>npm</goal>
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>${spotless.version}</version>
+        <configuration>
+          <java>
+            <googleJavaFormat>
+            </googleJavaFormat>
+            <removeUnusedImports/>
+          </java>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.springframework.boot</groupId>
