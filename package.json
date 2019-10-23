@@ -1,8 +1,8 @@
 {
-  "name": "prox-api-gateway",
+  "name": "prox-module-service",
   "private": true,
   "version": "0.1.0",
-  "description": "prox-api-gateway",
+  "description": "prox-module-service",
   "scripts": {
     "precommit": "lint-staged"
   },
