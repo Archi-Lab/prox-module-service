@@ -134,7 +134,6 @@
         <version>${sortpom.version}</version>
         <configuration>
           <predefinedSortOrder>recommended_2008_06</predefinedSortOrder>
-          <lineSeparator>\n</lineSeparator>
           <encoding>${project.build.sourceEncoding}</encoding>
           <sortProperties>true</sortProperties>
           <keepBlankLines>true</keepBlankLines>
