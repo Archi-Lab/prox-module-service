@@ -19,6 +19,10 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 @KeycloakConfiguration
 class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
+  public static final String MODULES_PATTERN = "/modules/**";
+  public static final String STUDY_COURSES_PATTERN = "/studyCourses/**";
+  public static final String PROFILE_PATTERN = "/profile/**";
+
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
     KeycloakAuthenticationProvider keycloakAuthenticationProvider =
@@ -51,23 +55,23 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     http.csrf()
         .disable()
         .authorizeRequests()
-        .antMatchers(HttpMethod.GET, "/modules/**")
+        .antMatchers(HttpMethod.GET, SecurityConfig.MODULES_PATTERN)
         .permitAll()
-        .antMatchers(HttpMethod.HEAD, "/modules/**")
+        .antMatchers(HttpMethod.HEAD, SecurityConfig.MODULES_PATTERN)
         .permitAll()
-        .antMatchers(HttpMethod.OPTIONS, "/modules/**")
+        .antMatchers(HttpMethod.OPTIONS, SecurityConfig.MODULES_PATTERN)
         .permitAll()
-        .antMatchers("/modules/**")
+        .antMatchers(SecurityConfig.MODULES_PATTERN)
         .denyAll()
-        .antMatchers(HttpMethod.GET, "/studyCourses/**")
+        .antMatchers(HttpMethod.GET, SecurityConfig.STUDY_COURSES_PATTERN)
         .permitAll()
-        .antMatchers(HttpMethod.HEAD, "/studyCourses/**")
+        .antMatchers(HttpMethod.HEAD, SecurityConfig.STUDY_COURSES_PATTERN)
         .permitAll()
-        .antMatchers(HttpMethod.OPTIONS, "/studyCourses/**")
+        .antMatchers(HttpMethod.OPTIONS, SecurityConfig.STUDY_COURSES_PATTERN)
         .permitAll()
-        .antMatchers("/studyCourses/**")
+        .antMatchers(SecurityConfig.STUDY_COURSES_PATTERN)
         .denyAll()
-        .antMatchers("/profile/**")
+        .antMatchers(SecurityConfig.PROFILE_PATTERN)
         .permitAll()
         .anyRequest()
         .denyAll();
