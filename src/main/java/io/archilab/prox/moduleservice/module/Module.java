@@ -16,15 +16,9 @@ import lombok.ToString;
 public class Module extends AbstractEntity {
 
   @Setter @JsonUnwrapped private ModuleName name;
-  //
-  // @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "modules")
-  // private Set<StudyCourse> studyCourses = new HashSet<>();
-  //
 
   @Setter @JsonUnwrapped private ModuleDescription description;
 
-  // This attribute is called projectType and not moduleType because project types such as PP, BA,
-  // MA, GP should not be mixed with other moduleTypes such as lextures or courses
   @Setter private ProjectType projectType;
 
   public Module(ModuleName name, ModuleDescription description) {
