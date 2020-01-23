@@ -24,7 +24,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   public static final String PROFILE_PATTERN = "/profile/**";
 
   @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+  public void configureGlobal(AuthenticationManagerBuilder auth) {
     KeycloakAuthenticationProvider keycloakAuthenticationProvider =
         this.keycloakAuthenticationProvider();
     keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
