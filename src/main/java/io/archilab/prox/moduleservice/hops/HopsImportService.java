@@ -35,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class HopsImportService {
 
   private static final Map<String[], ProjectType> projectTypeModuleNames =
-      createProjectTypeModuleNamesMap();
+      HopsImportService.createProjectTypeModuleNamesMap();
 
   private final HopsClient hopsClient;
 
@@ -64,8 +64,23 @@ public class HopsImportService {
     this.objectMapper = objectMapper;
   }
 
+  private static Map<String[], ProjectType> createProjectTypeModuleNamesMap() {
+    Map<String[], ProjectType> myMap = new HashMap<>();
+    myMap.put(new String[] {"Praxisprojekt"}, ProjectType.PP);
+    myMap.put(new String[] {"Bachelorarbeit", "Bachelor Arbeit "}, ProjectType.BA);
+    myMap.put(
+        new String[] {
+          "Masterarbeit",
+          "Master Thesis (English)",
+          "Masterarbeit und Kolloquium",
+          "Masterarbeit und Kolloquium (German)"
+        },
+        ProjectType.MA);
+    return myMap;
+  }
+
   public boolean hasData() {
-    return moduleRepository.count() > 0;
+    return this.moduleRepository.count() > 0;
   }
 
   public void importData() {
@@ -88,22 +103,22 @@ public class HopsImportService {
   }
 
   private ArrayList<?> fetchData(String type, Supplier<ArrayList> supplier) {
-    HopsImportService.log.info("Import " + type + " from HoPS API");
+    HopsImportService.log.info("Import {} from HoPS API", type);
     ArrayList<?> dataToImport = supplier.get();
 
     if (dataToImport == null) {
-      HopsImportService.log.info("Failed to import " + type + " from HoPS API");
-      HopsImportService.log.info("Import " + type + " from backup file");
-      TypeReference<List<?>> typeReference = new TypeReference<List<?>>() {};
+      HopsImportService.log.info("Failed to import {} from HoPS API", type);
+      HopsImportService.log.info("Import {} from backup file", type);
+      TypeReference<List<?>> typeReference = new TypeReference<>() {};
       InputStream inputStream = TypeReference.class.getResourceAsStream("/data/" + type + ".json");
       try {
         dataToImport = this.objectMapper.readValue(inputStream, typeReference);
-        HopsImportService.log.info("Import of " + type + " from file was successful!");
+        HopsImportService.log.info("Import of {} from file was successful!", type);
       } catch (Exception e) {
-        HopsImportService.log.error("Failed to import " + type + " from file", e);
+        HopsImportService.log.error("Failed to import {} from file", type, e);
       }
     } else {
-      HopsImportService.log.info("Import " + type + " from HoPS API was successful!");
+      HopsImportService.log.info("Import {} from HoPS API was successful!", type);
     }
 
     return dataToImport;
@@ -244,8 +259,7 @@ public class HopsImportService {
       }
 
       // Cache
-      HashMap<UUID, HopsModuleMapping> cachedModuleMappings =
-          new HashMap<UUID, HopsModuleMapping>();
+      HashMap<UUID, HopsModuleMapping> cachedModuleMappings = new HashMap<>();
       for (HopsModuleMapping mapping : this.hopsModuleMappingRepository.findAll()) {
         cachedModuleMappings.put(mapping.getModuleId(), mapping);
       }
@@ -293,10 +307,9 @@ public class HopsImportService {
           }
         } else {
           HopsImportService.log.info(
-              "Study course mapping should not be missing, maybe the module is not in use "
-                  + duplicateCurriculum.getSG_KZ()
-                  + " "
-                  + duplicateCurriculum.getID());
+              "Study course mapping should not be missing, maybe the module is not in use {} {}",
+              duplicateCurriculum.getSG_KZ(),
+              duplicateCurriculum.getID());
         }
       }
     }
@@ -305,21 +318,21 @@ public class HopsImportService {
 
     long moduleCount =
         StreamSupport.stream(this.moduleRepository.findAll().spliterator(), false).count();
-    HopsImportService.log.info("Number of modules: " + moduleCount);
+    HopsImportService.log.info("Number of modules: {}", moduleCount);
 
     long studyCourseCount =
         StreamSupport.stream(this.studyCourseRepository.findAll().spliterator(), false).count();
-    HopsImportService.log.info("Number of study courses: " + studyCourseCount);
+    HopsImportService.log.info("Number of study courses: {}", studyCourseCount);
 
     HopsImportService.log.info("All study courses and number of linked modules");
 
     for (StudyCourse studyCourse : this.studyCourseRepository.findAll()) {
-      HopsImportService.log.info("Name:   " + studyCourse.getName());
-      HopsImportService.log.info("Modules: " + studyCourse.getModules().size());
+      HopsImportService.log.info("Name: {}", studyCourse.getName());
+      HopsImportService.log.info("Modules: {}", studyCourse.getModules().size());
     }
 
-    long timeEnd = System.currentTimeMillis();
-    HopsImportService.log.info("Import completed in " + (timeEnd - timeStart) + " ms");
+    long duration = System.currentTimeMillis() - timeStart;
+    HopsImportService.log.info("Import completed in {} ms", duration);
   }
 
   private Module createAndFillModule(HopsModule module) {
@@ -332,11 +345,11 @@ public class HopsImportService {
     newModule.setName(new ModuleName(module.getMODULBEZEICHNUNG()));
     newModule.setDescription(
         new ModuleDescription((module.getINHALT() != null ? module.getINHALT() : "")));
-    newModule.setProjectType(retrieveProjectTypeFromHopsModule(module));
+    newModule.setProjectType(this.retrieveProjectTypeFromHopsModule(module));
   }
 
   private ProjectType retrieveProjectTypeFromHopsModule(HopsModule module) {
-    for (Entry<String[], ProjectType> entry : projectTypeModuleNames.entrySet()) {
+    for (Entry<String[], ProjectType> entry : HopsImportService.projectTypeModuleNames.entrySet()) {
       for (String key : entry.getKey()) {
         if (module.getMODULBEZEICHNUNG().equalsIgnoreCase(key)) {
           return entry.getValue();
@@ -345,20 +358,5 @@ public class HopsImportService {
     }
 
     return ProjectType.UNDEFINED;
-  }
-
-  private static Map<String[], ProjectType> createProjectTypeModuleNamesMap() {
-    Map<String[], ProjectType> myMap = new HashMap<String[], ProjectType>();
-    myMap.put(new String[] {"Praxisprojekt"}, ProjectType.PP);
-    myMap.put(new String[] {"Bachelorarbeit", "Bachelor Arbeit "}, ProjectType.BA);
-    myMap.put(
-        new String[] {
-          "Masterarbeit",
-          "Master Thesis (English)",
-          "Masterarbeit und Kolloquium",
-          "Masterarbeit und Kolloquium (German)"
-        },
-        ProjectType.MA);
-    return myMap;
   }
 }
