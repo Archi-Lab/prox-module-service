@@ -76,21 +76,4 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         .anyRequest()
         .denyAll();
   }
-
-  // @Bean
-  // public FilterRegistrationBean keycloakAuthenticationProcessingFilterRegistrationBean(
-  // KeycloakAuthenticationProcessingFilter filter) {
-  // FilterRegistrationBean registrationBean = new FilterRegistrationBean(filter);
-  // registrationBean.setEnabled(false);
-  // return registrationBean;
-  // }
-  //
-  // @Bean
-  // public FilterRegistrationBean keycloakPreAuthActionsFilterRegistrationBean(
-  // KeycloakPreAuthActionsFilter filter) {
-  // FilterRegistrationBean registrationBean = new FilterRegistrationBean(filter);
-  // registrationBean.setEnabled(false);
-  // return registrationBean;
-  // }
-
 }
