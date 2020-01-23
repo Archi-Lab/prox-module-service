@@ -129,10 +129,8 @@ public class HopsImportService {
       List<HopsCurriculum> hopsCurricula) {
     long timeStart = System.currentTimeMillis();
 
-    // for (int i = 0; i < hopsModules.size(); i++) {
     List<HopsModule> oldModules = new ArrayList<>();
     for (HopsModule currentModule : hopsModules) {
-      // HopsModule currentModule = hopsModules.get(i);
       String dateversion = currentModule.getDATEVERSION();
       DateFormat dateFormat = new SimpleDateFormat("dd.mm.yy");
       Date date_active = null;
