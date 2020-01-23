@@ -133,23 +133,23 @@ public class HopsImportService {
     for (HopsModule currentModule : hopsModules) {
       String dateversion = currentModule.getDATEVERSION();
       DateFormat dateFormat = new SimpleDateFormat("dd.mm.yy");
-      Date date_active = null;
+      Date dateActive;
       try {
-        date_active = dateFormat.parse(dateversion);
+        dateActive = dateFormat.parse(dateversion);
       } catch (ParseException e) {
         throw new RuntimeException("Failed to parse date", e);
       }
       boolean newerVersionAvailable = false;
       for (HopsModule otherModule : hopsModules) {
-        Date date_other = null;
+        Date dateOther;
         try {
-          date_other = dateFormat.parse(otherModule.getDATEVERSION());
+          dateOther = dateFormat.parse(otherModule.getDATEVERSION());
         } catch (ParseException e) {
           throw new RuntimeException("Failed to parse date", e);
         }
 
         if (currentModule.getMODULKUERZEL().equals(otherModule.getMODULKUERZEL())
-            && date_active.before(date_other)) {
+            && dateActive.before(dateOther)) {
           newerVersionAvailable = true;
           break;
         }
@@ -284,7 +284,7 @@ public class HopsImportService {
               }
             }
 
-            if (moduleMissing == true) {
+            if (moduleMissing) {
               newModule = this.createAndFillModule(module);
               newModule = this.moduleRepository.save(newModule);
 
