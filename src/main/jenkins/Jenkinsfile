@@ -7,7 +7,7 @@ node {
     def tag
 
     def server = 'tcp://10.10.10.42:2376'
-    def certs = 'prox-dev-certs'
+    def certs = 'dev-certs'
     def tagPrefix = '-dev'
 
     stage('Checkout') {
@@ -42,6 +42,8 @@ node {
 
     stage('Deploy') {
         docker.withServer(server, certs) {
+
+
             docker.withRegistry('https://docker.nexus.archi-lab.io', 'archilab-nexus-jenkins') {
                 sh "env REPOSITORY=${repository} IMAGE=${image} TAG=${tag} \
                     docker stack deploy \

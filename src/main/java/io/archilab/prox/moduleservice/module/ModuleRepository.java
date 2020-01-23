@@ -10,4 +10,5 @@ public interface ModuleRepository extends PagingAndSortingRepository<Module, UUI
 
   Page<Module> findByName_NameContainingIgnoreCase(@Param("name") String name, Pageable pageable);
 
+  Page<Module> findByProjectType(@Param("projectType") ProjectType projectType, Pageable pageable);
 }

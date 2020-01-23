@@ -48,10 +48,29 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     super.configure(http);
-    http.csrf().disable().authorizeRequests().antMatchers(HttpMethod.GET, "/modules/**").permitAll()
-        .antMatchers("/modules/**").denyAll().antMatchers(HttpMethod.GET, "/studyCourses/**")
-        .permitAll().antMatchers("/studyCourses/**").denyAll().antMatchers("/profile/**")
-        .permitAll().anyRequest().denyAll();
+    http.csrf()
+        .disable()
+        .authorizeRequests()
+        .antMatchers(HttpMethod.GET, "/modules/**")
+        .permitAll()
+        .antMatchers(HttpMethod.HEAD, "/modules/**")
+        .permitAll()
+        .antMatchers(HttpMethod.OPTIONS, "/modules/**")
+        .permitAll()
+        .antMatchers("/modules/**")
+        .denyAll()
+        .antMatchers(HttpMethod.GET, "/studyCourses/**")
+        .permitAll()
+        .antMatchers(HttpMethod.HEAD, "/studyCourses/**")
+        .permitAll()
+        .antMatchers(HttpMethod.OPTIONS, "/studyCourses/**")
+        .permitAll()
+        .antMatchers("/studyCourses/**")
+        .denyAll()
+        .antMatchers("/profile/**")
+        .permitAll()
+        .anyRequest()
+        .denyAll();
   }
 
   // @Bean
