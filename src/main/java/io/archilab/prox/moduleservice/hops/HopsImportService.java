@@ -86,14 +86,13 @@ public class HopsImportService {
   public void importData() {
     HopsImportService.log.info("Start import of HoPS data");
 
-    ArrayList<HopsModule> hopsModules =
-        (ArrayList<HopsModule>) this.fetchData("MODULE", this.hopsClient::getModules);
-    ArrayList<HopsStudyCourse> hopsStudyCourses =
-        (ArrayList<HopsStudyCourse>)
+    List<HopsModule> hopsModules =
+        (List<HopsModule>) this.fetchData("MODULE", this.hopsClient::getModules);
+    List<HopsStudyCourse> hopsStudyCourses =
+        (List<HopsStudyCourse>)
             this.fetchData("MSTUDIENGANGRICHTUNG", this.hopsClient::getStudyCourses);
-    ArrayList<HopsCurriculum> hopsCurricula =
-        (ArrayList<HopsCurriculum>)
-            this.fetchData("MODULECURRICULUM", this.hopsClient::getCurricula);
+    List<HopsCurriculum> hopsCurricula =
+        (List<HopsCurriculum>) this.fetchData("MODULECURRICULUM", this.hopsClient::getCurricula);
 
     HopsImportService.log.info("Retrieved all data from HoPS");
 
@@ -102,9 +101,9 @@ public class HopsImportService {
     this.updateData(hopsModules, hopsStudyCourses, hopsCurricula);
   }
 
-  private ArrayList<?> fetchData(String type, Supplier<ArrayList> supplier) {
+  private List<?> fetchData(String type, Supplier<List> supplier) {
     HopsImportService.log.info("Import {} from HoPS API", type);
-    ArrayList<?> dataToImport = supplier.get();
+    List<?> dataToImport = supplier.get();
 
     if (dataToImport == null) {
       HopsImportService.log.info("Failed to import {} from HoPS API", type);
@@ -125,9 +124,9 @@ public class HopsImportService {
   }
 
   public void updateData(
-      ArrayList<HopsModule> hopsModules,
-      ArrayList<HopsStudyCourse> hopsStudyCourses,
-      ArrayList<HopsCurriculum> hopsCurricula) {
+      List<HopsModule> hopsModules,
+      List<HopsStudyCourse> hopsStudyCourses,
+      List<HopsCurriculum> hopsCurricula) {
     long timeStart = System.currentTimeMillis();
 
     // for (int i = 0; i < hopsModules.size(); i++) {
@@ -225,7 +224,7 @@ public class HopsImportService {
     HopsImportService.log.info("Saving modules");
     for (HopsModule module : hopsModules) {
 
-      ArrayList<HopsCurriculum> duplicateCurricula = new ArrayList<>();
+      List<HopsCurriculum> duplicateCurricula = new ArrayList<>();
 
       String modulkuerzel = module.getMODULKUERZEL();
       for (HopsCurriculum curriculum : hopsCurricula) {
