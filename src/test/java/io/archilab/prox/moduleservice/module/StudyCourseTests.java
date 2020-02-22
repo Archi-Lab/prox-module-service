@@ -1,6 +1,7 @@
 package io.archilab.prox.moduleservice.module;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @DataJpaTest
 public class StudyCourseTests {
 
-  @Autowired
-  StudyCourseRepository repository;
+  @Autowired StudyCourseRepository repository;
 
   @Test
   public void equality() {
@@ -24,9 +24,8 @@ public class StudyCourseTests {
     assertThat(studyCourse1).isNotEqualTo(studyCourse2);
     assertThat(studyCourse1.hashCode()).isNotEqualTo(studyCourse2.hashCode());
     this.repository.save(studyCourse1);
-    StudyCourse studyCourse3 = this.repository.findById(studyCourse1.getId()).get();
+    StudyCourse studyCourse3 = this.repository.findById(studyCourse1.getId()).orElseThrow();
     assertThat(studyCourse1).isEqualTo(studyCourse3);
     assertThat(studyCourse1.hashCode()).isEqualTo(studyCourse3.hashCode());
   }
-
 }

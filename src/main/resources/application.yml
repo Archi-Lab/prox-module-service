@@ -2,6 +2,12 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://service-discovery:8761/eureka/
+importHops:
+  delay:
+    hasData:
+      minutes: 1440
+    hasNoData:
+      seconds: 10
 keycloak:
   auth-server-url: https://login.archi-lab.io/auth
   bearer-only: true

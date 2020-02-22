@@ -15,21 +15,21 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Module extends AbstractEntity {
 
-  @Setter
-  @JsonUnwrapped
-  private ModuleName name;
-  //
-  // @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "modules")
-  // private Set<StudyCourse> studyCourses = new HashSet<>();
-  //
+  @Setter @JsonUnwrapped private ModuleName name;
 
-  @Setter
-  @JsonUnwrapped
-  private ModuleDescription description;
+  @Setter @JsonUnwrapped private ModuleDescription description;
+
+  @Setter private ProjectType projectType;
 
   public Module(ModuleName name, ModuleDescription description) {
     this.name = name;
     this.description = description;
+    this.projectType = ProjectType.UNDEFINED;
   }
 
+  public Module(ModuleName name, ModuleDescription description, ProjectType projectType) {
+    this.name = name;
+    this.description = description;
+    this.projectType = projectType;
+  }
 }

@@ -1,6 +1,7 @@
 package io.archilab.prox.moduleservice.module;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 @DataJpaTest
 public class JpaIntegrationTests {
 
-  @Autowired
-  ModuleRepository moduleRepository;
+  private static final ModuleDescription LOREM_IPSUM_DESCRIPTION =
+      new ModuleDescription("Lorem ipsum");
+  @Autowired ModuleRepository moduleRepository;
 
-  @Autowired
-  StudyCourseRepository studyCourseRepository;
+  @Autowired StudyCourseRepository studyCourseRepository;
 
   @Test
   public void creation() {
@@ -25,17 +26,12 @@ public class JpaIntegrationTests {
         new StudyCourse(new StudyCourseName("Software Engineering"), AcademicDegree.MASTER);
     StudyCourse informationSystems =
         new StudyCourse(new StudyCourseName("Information Systems"), AcademicDegree.MASTER);
-    Module am =
-        new Module(new ModuleName("Anforderungsmanagement"), new ModuleDescription("Lorem ipsum"));
-    Module fae = new Module(new ModuleName("Fachspezifischer Architekturentwurf"),
-        new ModuleDescription("Lorem ipsum"));
-    Module bi =
-        new Module(new ModuleName("Business Intelligence"), new ModuleDescription("Lorem ipsum"));
-    Module eam = new Module(new ModuleName("Enterprise Architecture Management"),
-        new ModuleDescription("Lorem ipsum"));
-
-    computerScience.addStudyDirection(softwareEngineering);
-    computerScience.addStudyDirection(informationSystems);
+    Module am = new Module(new ModuleName("Anforderungsmanagement"), LOREM_IPSUM_DESCRIPTION);
+    Module fae =
+        new Module(new ModuleName("Fachspezifischer Architekturentwurf"), LOREM_IPSUM_DESCRIPTION);
+    Module bi = new Module(new ModuleName("Business Intelligence"), LOREM_IPSUM_DESCRIPTION);
+    Module eam =
+        new Module(new ModuleName("Enterprise Architecture Management"), LOREM_IPSUM_DESCRIPTION);
 
     softwareEngineering.addModule(am);
     softwareEngineering.addModule(fae);
@@ -44,17 +40,11 @@ public class JpaIntegrationTests {
     informationSystems.addModule(eam);
 
     this.studyCourseRepository.save(computerScience);
+    this.studyCourseRepository.save(softwareEngineering);
+    this.studyCourseRepository.save(informationSystems);
 
-    assertThat(this.studyCourseRepository.findAll()).contains(computerScience, softwareEngineering,
-        informationSystems);
+    assertThat(this.studyCourseRepository.findAll())
+        .contains(computerScience, softwareEngineering, informationSystems);
     assertThat(this.moduleRepository.findAll()).contains(am, fae, bi, eam);
-    assertThat(
-        this.studyCourseRepository.findById(computerScience.getId()).get().getStudyDirections())
-            .contains(softwareEngineering, informationSystems);
-    assertThat(this.studyCourseRepository.findById(softwareEngineering.getId()).get()
-        .getParentStudyCourse()).isEqualTo(computerScience);
-    assertThat(this.studyCourseRepository.findById(informationSystems.getId()).get()
-        .getParentStudyCourse()).isEqualTo(computerScience);
   }
-
 }

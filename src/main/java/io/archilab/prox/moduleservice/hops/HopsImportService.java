@@ -7,6 +7,7 @@ import io.archilab.prox.moduleservice.module.Module;
 import io.archilab.prox.moduleservice.module.ModuleDescription;
 import io.archilab.prox.moduleservice.module.ModuleName;
 import io.archilab.prox.moduleservice.module.ModuleRepository;
+import io.archilab.prox.moduleservice.module.ProjectType;
 import io.archilab.prox.moduleservice.module.StudyCourse;
 import io.archilab.prox.moduleservice.module.StudyCourseName;
 import io.archilab.prox.moduleservice.module.StudyCourseRepository;
@@ -16,8 +17,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +33,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Slf4j
 public class HopsImportService {
+
+  private static final Map<String[], ProjectType> projectTypeModuleNames =
+      HopsImportService.createProjectTypeModuleNamesMap();
 
   private final HopsClient hopsClient;
 
@@ -56,6 +64,25 @@ public class HopsImportService {
     this.objectMapper = objectMapper;
   }
 
+  private static Map<String[], ProjectType> createProjectTypeModuleNamesMap() {
+    Map<String[], ProjectType> myMap = new HashMap<>();
+    myMap.put(new String[] {"Praxisprojekt"}, ProjectType.PP);
+    myMap.put(new String[] {"Bachelorarbeit", "Bachelor Arbeit "}, ProjectType.BA);
+    myMap.put(
+        new String[] {
+          "Masterarbeit",
+          "Master Thesis (English)",
+          "Masterarbeit und Kolloquium",
+          "Masterarbeit und Kolloquium (German)"
+        },
+        ProjectType.MA);
+    return myMap;
+  }
+
+  public boolean hasData() {
+    return this.moduleRepository.count() > 0;
+  }
+
   public void importData() {
     HopsImportService.log.info("Start import of HoPS data");
 
@@ -74,23 +101,23 @@ public class HopsImportService {
     this.updateData(hopsModules, hopsStudyCourses, hopsCurricula);
   }
 
-  private List<?> fetchData(String type, Supplier<List<?>> supplier) {
-    HopsImportService.log.info("Import " + type + " from HoPS API");
+  private List<?> fetchData(String type, Supplier<List> supplier) {
+    HopsImportService.log.info("Import {} from HoPS API", type);
     List<?> dataToImport = supplier.get();
 
     if (dataToImport == null) {
-      HopsImportService.log.info("Failed to import " + type + " from HoPS API");
-      HopsImportService.log.info("Import " + type + " from backup file");
+      HopsImportService.log.info("Failed to import {} from HoPS API", type);
+      HopsImportService.log.info("Import {} from backup file", type);
       TypeReference<List<?>> typeReference = new TypeReference<>() {};
       InputStream inputStream = TypeReference.class.getResourceAsStream("/data/" + type + ".json");
       try {
         dataToImport = this.objectMapper.readValue(inputStream, typeReference);
-        HopsImportService.log.info("Import of " + type + " from file was successful!");
+        HopsImportService.log.info("Import of {} from file was successful!", type);
       } catch (Exception e) {
-        HopsImportService.log.error("Failed to import " + type + " from file", e);
+        HopsImportService.log.error("Failed to import {} from file", type, e);
       }
     } else {
-      HopsImportService.log.info("Import " + type + " from HoPS API was successful!");
+      HopsImportService.log.info("Import {} from HoPS API was successful!", type);
     }
 
     return dataToImport;
@@ -100,29 +127,29 @@ public class HopsImportService {
       List<HopsModule> hopsModules,
       List<HopsStudyCourse> hopsStudyCourses,
       List<HopsCurriculum> hopsCurricula) {
-    // for (int i = 0; i < hopsModules.size(); i++) {
+    long timeStart = System.currentTimeMillis();
+
     List<HopsModule> oldModules = new ArrayList<>();
     for (HopsModule currentModule : hopsModules) {
-      // HopsModule currentModule = hopsModules.get(i);
       String dateversion = currentModule.getDATEVERSION();
       DateFormat dateFormat = new SimpleDateFormat("dd.mm.yy");
-      Date date_active;
+      Date dateActive;
       try {
-        date_active = dateFormat.parse(dateversion);
+        dateActive = dateFormat.parse(dateversion);
       } catch (ParseException e) {
         throw new RuntimeException("Failed to parse date", e);
       }
       boolean newerVersionAvailable = false;
       for (HopsModule otherModule : hopsModules) {
-        Date date_other;
+        Date dateOther;
         try {
-          date_other = dateFormat.parse(otherModule.getDATEVERSION());
+          dateOther = dateFormat.parse(otherModule.getDATEVERSION());
         } catch (ParseException e) {
           throw new RuntimeException("Failed to parse date", e);
         }
 
         if (currentModule.getMODULKUERZEL().equals(otherModule.getMODULKUERZEL())
-            && date_active.before(date_other)) {
+            && dateActive.before(dateOther)) {
           newerVersionAvailable = true;
           break;
         }
@@ -168,8 +195,8 @@ public class HopsImportService {
       HopsStudyCourseId hopsStudyCourseId = new HopsStudyCourseId(hopsStudyCourse.getSG_KZ());
       Optional<HopsStudyCourseMapping> studyCourseMapping =
           this.hopsStudyCourseMappingRepository.findByHopsId(hopsStudyCourseId);
-      StudyCourse studyCourse;
-      if (studyCourseMapping.isEmpty()) {
+      StudyCourse studyCourse = null;
+      if (!studyCourseMapping.isPresent()) {
         studyCourse = new StudyCourse(studyCourseName, academicDegree);
 
         HopsStudyCourseMapping newStudyCourseMapping =
@@ -195,7 +222,7 @@ public class HopsImportService {
     HopsImportService.log.info("Saving modules");
     for (HopsModule module : hopsModules) {
 
-      ArrayList<HopsCurriculum> duplicateCurricula = new ArrayList<>();
+      List<HopsCurriculum> duplicateCurricula = new ArrayList<>();
 
       String modulkuerzel = module.getMODULKUERZEL();
       for (HopsCurriculum curriculum : hopsCurricula) {
@@ -228,6 +255,12 @@ public class HopsImportService {
         this.moduleRepository.save(newModule);
       }
 
+      // Cache
+      HashMap<UUID, HopsModuleMapping> cachedModuleMappings = new HashMap<>();
+      for (HopsModuleMapping mapping : this.hopsModuleMappingRepository.findAll()) {
+        cachedModuleMappings.put(mapping.getModuleId(), mapping);
+      }
+
       // regel: jedes Modul hat max. 1 studiengang. Daher werden gewisse Hops Module geklont.
       for (HopsCurriculum duplicateCurriculum : duplicateCurricula) {
         Optional<HopsStudyCourseMapping> studyCourseMapping =
@@ -240,14 +273,9 @@ public class HopsImportService {
             boolean moduleMissing = true;
             StudyCourse studyCourse = optionalStudyCourse.get();
             for (Module tempModule : studyCourse.getModules()) {
-              Optional<HopsModuleMapping> tempModuleMapping =
-                  this.hopsModuleMappingRepository.findByModuleId(tempModule.getId());
-              if (tempModuleMapping.isPresent()) {
-                if (tempModuleMapping
-                    .get()
-                    .getHopsId()
-                    .getKuerzel()
-                    .equals(module.getMODULKUERZEL())) {
+              HopsModuleMapping tempModuleMapping = cachedModuleMappings.get(tempModule.getId());
+              if (tempModuleMapping != null) {
+                if (tempModuleMapping.getHopsId().getKuerzel().equals(module.getMODULKUERZEL())) {
                   moduleMissing = false;
                   break;
                 }
@@ -261,10 +289,12 @@ public class HopsImportService {
               newModule = this.moduleRepository.save(newModule);
 
               studyCourse.addModule(newModule);
-              this.hopsModuleMappingRepository.save(
+              HopsModuleMapping newHopsModuleMapping =
                   new HopsModuleMapping(
                       new HopsModuleId(module.getMODULKUERZEL(), module.getDATEVERSION()),
-                      newModule.getId()));
+                      newModule.getId());
+              this.hopsModuleMappingRepository.save(newHopsModuleMapping);
+              cachedModuleMappings.put(newHopsModuleMapping.getModuleId(), newHopsModuleMapping);
 
               this.studyCourseRepository.save(studyCourse);
             }
@@ -274,10 +304,9 @@ public class HopsImportService {
           }
         } else {
           HopsImportService.log.info(
-              "Study course mapping should not be missing, maybe the module is not in use "
-                  + duplicateCurriculum.getSG_KZ()
-                  + " "
-                  + duplicateCurriculum.getID());
+              "Study course mapping should not be missing, maybe the module is not in use {} {}",
+              duplicateCurriculum.getSG_KZ(),
+              duplicateCurriculum.getID());
         }
       }
     }
@@ -286,24 +315,25 @@ public class HopsImportService {
 
     long moduleCount =
         StreamSupport.stream(this.moduleRepository.findAll().spliterator(), false).count();
-    HopsImportService.log.info("Number of modules: " + moduleCount);
+    HopsImportService.log.info("Number of modules: {}", moduleCount);
 
     long studyCourseCount =
         StreamSupport.stream(this.studyCourseRepository.findAll().spliterator(), false).count();
-    HopsImportService.log.info("Number of study courses: " + studyCourseCount);
+    HopsImportService.log.info("Number of study courses: {}", studyCourseCount);
 
     HopsImportService.log.info("All study courses and number of linked modules");
 
     for (StudyCourse studyCourse : this.studyCourseRepository.findAll()) {
-      HopsImportService.log.info("Name:   " + studyCourse.getName());
-      HopsImportService.log.info("Modules: " + studyCourse.getModules().size());
+      HopsImportService.log.info("Name: {}", studyCourse.getName());
+      HopsImportService.log.info("Modules: {}", studyCourse.getModules().size());
     }
 
-    HopsImportService.log.info("Import complete!");
+    long duration = System.currentTimeMillis() - timeStart;
+    HopsImportService.log.info("Import completed in {} ms", duration);
   }
 
   private Module createAndFillModule(HopsModule module) {
-    Module newM = new Module(new ModuleName(""), new ModuleDescription(""));
+    Module newM = new Module(new ModuleName(""), new ModuleDescription(""), ProjectType.UNDEFINED);
     this.fillModule(newM, module);
     return newM;
   }
@@ -312,5 +342,18 @@ public class HopsImportService {
     newModule.setName(new ModuleName(module.getMODULBEZEICHNUNG()));
     newModule.setDescription(
         new ModuleDescription((module.getINHALT() != null ? module.getINHALT() : "")));
+    newModule.setProjectType(this.retrieveProjectTypeFromHopsModule(module));
+  }
+
+  private ProjectType retrieveProjectTypeFromHopsModule(HopsModule module) {
+    for (Entry<String[], ProjectType> entry : HopsImportService.projectTypeModuleNames.entrySet()) {
+      for (String key : entry.getKey()) {
+        if (module.getMODULBEZEICHNUNG().equalsIgnoreCase(key)) {
+          return entry.getValue();
+        }
+      }
+    }
+
+    return ProjectType.UNDEFINED;
   }
 }
