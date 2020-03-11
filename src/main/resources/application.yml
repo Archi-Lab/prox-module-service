@@ -13,12 +13,11 @@ keycloak:
   bearer-only: true
   cors: false
   principal-attribute: preferred_username
-  public-client: false
   realm: archilab
   resource: prox-module-service
 server:
   port: 9001
-  use-forward-headers: true
+  forward-headers-strategy: native
 spring:
   application:
     name: module-service
