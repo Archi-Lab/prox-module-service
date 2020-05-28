@@ -21,6 +21,10 @@ server:
 spring:
   application:
     name: module-service
+  data:
+    rest:
+      max-page-size: 1000000000
+      default-page-size: 1000000000
   datasource:
     password: module-service
     url: jdbc:postgresql://module-db:5432/module-db
